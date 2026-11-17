@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&display=swap');
+
+:root {
+  /* Color Palette - 1:1 Production Values */
+  --color-secondary-400: #e0ded4;
+  --color-secondary-50: #fbfbf7;
+  --color-accent-200: #eae8dc;
+  --color-accent-400: #d1d1c7;
+  --color-accent-500: #888879;
+  --color-text-bg: #151515;
+
+  /* Typography Scales */
+  --text-menu: clamp(2.5rem, 5vw, 4.5rem);
+  --text-h1-alt: clamp(2rem, 4vw, 3.5rem);
+  --text-skill: clamp(1.25rem, 2.5vw, 2rem);
+  --text-heading-1: clamp(2.5rem, 6vw, 5rem);
+  --text-heading-body: clamp(1rem, 1.5vw, 1.25rem);
+  --text-base-large: clamp(1.125rem, 1.5vw, 1.35rem);
+  --text-base: 1rem;
+  --text-base-small: 0.875rem;
+  --text--small: 0.8125rem;
+
+  /* Spacing */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+
+  --font-editorial: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-secondary-400);
+  color: #171717;
+  font-family: var(--font-editorial);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Lenis Smooth Scroll Recommended Rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--color-secondary-400);
+}
+
+/* SVG Curtain Wave Preloader */
+#intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 999999999;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1c1b18;
+  pointer-events: all;
+  overflow: hidden;
+}
+
+#intro-curtain svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 300px);
+}
+
+/* Custom Lerp Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999999;
+  width: 80px;
+  height: 80px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.25s ease, transform 0.08s ease-out;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Sticky Container & Spacer */
+.hero-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background-color: var(--color-secondary-400);
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .hero-sticky-container {
+    padding: 2rem 2.5rem;
+  }
+}
+
+.hero-spacer {
+  margin-bottom: -100svh;
+  padding: 0;
+}
+
+.hero-spacer-inner {
+  height: 100svh;
+}
+
+/* Hero Typography Scale */
+.hero-headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  user-select: none;
+  font-size: clamp(3.5rem, 14.5vw, 16rem);
+  color: #171717;
+}
+
+/* Animated Underline for Drawer Links */
+.drawer-link {
+  position: relative;
+  display: inline-block;
+  color: var(--color-accent-200);
+  text-decoration: none;
+}
+
+.drawer-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background-color: var(--color-accent-200);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-link:hover::after {
+  width: 100%;
+}
+
+/* Hamburger SVG transformation */
+.menu-btn-active #menu-line-1 {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.menu-btn-active #menu-line-2 {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+#menu-line-1, #menu-line-2 {
+  transition: transform 0.3s ease;
+  transform-origin: 50% 50%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-text-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-400);
+}

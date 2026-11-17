@@ -1,0 +1,203 @@
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Exact user-specified off-white background */
+  --color-text-bg: #E8E8E3;
+  --color-secondary-100: #6b645c;
+  --color-secondary-200: #524d47;
+  --color-secondary-300: #242320;
+  --color-secondary-400: #080807;
+  --color-accent-600: #8c8c73;
+  --color-accent-200: #e8e8e3;
+
+  /* Fonts: Exact PP Neue Montreal & Consolas/montrealMono */
+  --font-editorial: 'montreal', 'PP Neue Montreal', sans-serif;
+  --font-mono: 'montrealMono', 'Consolas', 'GeistMono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-text-bg);
+  color: #080807;
+  font-family: var(--font-editorial);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Lenis Smooth Scroll Recommended Rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--color-text-bg);
+  font-family: var(--font-editorial);
+}
+
+/* SVG Curtain Wave Preloader */
+#intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 999999999;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1c1b18;
+  pointer-events: all;
+  overflow: hidden;
+}
+
+#intro-curtain svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 300px);
+}
+
+/* Custom Lerp Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999999;
+  width: 80px;
+  height: 80px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.25s ease, transform 0.08s ease-out;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Sticky Container & Spacer */
+.hero-sticky-container {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background-color: var(--color-text-bg);
+  padding: 1.75rem 1.75rem 2.25rem 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .hero-sticky-container {
+    padding: 2rem 3rem 2.5rem 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-sticky-container {
+    padding: 2.25rem 3.75rem 2.75rem 3.75rem;
+  }
+}
+
+.hero-spacer {
+  margin-bottom: -100svh;
+  padding: 0;
+}
+
+.hero-spacer-inner {
+  height: 100svh;
+}
+
+/* Animated Underline for Drawer Links */
+.drawer-link {
+  position: relative;
+  display: inline-block;
+  color: var(--color-accent-200);
+  text-decoration: none;
+}
+
+.drawer-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background-color: var(--color-accent-200);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-link:hover::after {
+  width: 100%;
+}
+
+/* Hamburger SVG transformation */
+.menu-btn-active #menu-line-1 {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.menu-btn-active #menu-line-2 {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+#menu-line-1, #menu-line-2 {
+  transition: transform 0.3s ease;
+  transform-origin: 50% 50%;
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(209, 209, 199, 0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-secondary-400);
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-400);
+}
