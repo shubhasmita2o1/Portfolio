@@ -15,7 +15,7 @@ export default function App() {
   useLenis();
 
   return (
-    <div className="relative min-h-screen bg-[#e0ded4] text-[#151515] font-editorial selection:bg-[#151515] selection:text-[#e0ded4]">
+    <div className="relative min-h-screen bg-[#E8E8E3] text-[#080807] font-editorial selection:bg-[#080807] selection:text-[#E8E8E3]">
       {/* Introductory SVG Curtain Wave Preloader */}
       <Preloader />
 

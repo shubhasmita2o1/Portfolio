@@ -1,30 +1,52 @@
 export function Navbar() {
   return (
     <header className="absolute top-0 z-40 w-full">
-      <div className="flex items-center justify-between px-6 md:px-11 lg:px-14 py-7">
-        <span className="text-[14px] md:text-[15px] font-medium tracking-tight text-[#524d47] font-editorial">
-          Web Developer &amp; Designer
-        </span>
-        <nav className="hidden md:block">
-          <ul className="flex items-center gap-7 lg:gap-8 text-[14px] md:text-[15px] font-medium tracking-tight text-[#524d47] font-editorial">
-            <li>
-              <a href="#Services" className="hover:text-black transition-colors">
-                Services
+      <div className="section-padding-x mt-[var(--space-md)] flex flex-row items-start justify-between gap-x-[var(--gap-fluid)] lg:grid lg:grid-cols-12 lg:items-center">
+        <div className="col-span-8 flex flex-col items-start gap-x-[var(--space-2xl)] gap-y-[var(--space-3xs)] lg:flex-row lg:items-center">
+          <span className="block w-fit max-w-[14ch] text-balance font-medium leading-snug text-[var(--color-secondary-100)] text-[length:var(--text-base)] sm:max-w-max md:text-[length:var(--text-base-small)] 2xl:text-[length:var(--text-base)]">
+            <div>Web Developer &amp; Designer</div>
+          </span>
+        </div>
+        <nav className="col-span-4 flex justify-end text-[length:var(--text-base)] md:text-[length:var(--text-base-small)] 2xl:text-[length:var(--text-base)]">
+          <ul className="m-0 flex flex-col items-start text-[var(--color-secondary-100)] gap-y-[var(--space-3xs)] md:flex-row md:items-center md:gap-x-[var(--space-2xs)] md:gap-y-0 font-medium">
+            <li className="flex leading-normal md:leading-snug">
+              <a className="group relative block h-fit overflow-hidden font-medium cursor-pointer select-none" href="/#Services">
+                <span className="block w-full transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-0 group-hover:-translate-y-full">
+                  Services
+                </span>
+                <span aria-hidden="true" className="absolute top-0 left-0 w-full block transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-full group-hover:translate-y-0">
+                  Services
+                </span>
               </a>
             </li>
-            <li>
-              <a href="#Works" className="hover:text-black transition-colors">
-                Works
+            <li className="flex leading-normal md:leading-snug">
+              <a className="group relative block h-fit overflow-hidden font-medium cursor-pointer select-none" href="/#Works">
+                <span className="block w-full transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-0 group-hover:-translate-y-full">
+                  Works
+                </span>
+                <span aria-hidden="true" className="absolute top-0 left-0 w-full block transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-full group-hover:translate-y-0">
+                  Works
+                </span>
               </a>
             </li>
-            <li>
-              <a href="#About" className="hover:text-black transition-colors">
-                About
+            <li className="flex leading-normal md:leading-snug">
+              <a className="group relative block h-fit overflow-hidden font-medium cursor-pointer select-none" href="/#About">
+                <span className="block w-full transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-0 group-hover:-translate-y-full">
+                  About
+                </span>
+                <span aria-hidden="true" className="absolute top-0 left-0 w-full block transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-full group-hover:translate-y-0">
+                  About
+                </span>
               </a>
             </li>
-            <li>
-              <a href="#Contact" className="hover:text-black transition-colors">
-                Contact
+            <li className="flex leading-normal md:leading-snug">
+              <a className="group relative block h-fit overflow-hidden font-medium cursor-pointer select-none" href="/#Contact">
+                <span className="block w-full transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-0 group-hover:-translate-y-full">
+                  Contact
+                </span>
+                <span aria-hidden="true" className="absolute top-0 left-0 w-full block transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-full group-hover:translate-y-0">
+                  Contact
+                </span>
               </a>
             </li>
           </ul>

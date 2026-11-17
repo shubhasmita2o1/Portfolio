@@ -16,8 +16,8 @@ export function SelectedWorks() {
         if (!card) return;
         ScrollTrigger.create({
           trigger: card,
-          start: 'top 60%',
-          end: 'bottom 40%',
+          start: 'top 55%',
+          end: 'bottom 45%',
           onEnter: () => setActiveIndex(idx),
           onEnterBack: () => setActiveIndex(idx),
         });
@@ -27,48 +27,101 @@ export function SelectedWorks() {
     return () => ctx.revert();
   }, []);
 
+  const projects = portfolioData.projects || [
+    {
+      id: "01",
+      title: "NURA",
+      subtitle: "Modern Marketing Website",
+      category: "Development",
+      year: "2025",
+      link: "https://nurabyzuned.netlify.app/"
+    },
+    {
+      id: "02",
+      title: "Job Portal",
+      subtitle: "Full-Stack Recruitment Platform",
+      category: "Development",
+      year: "2025",
+      link: "https://zunedjobs.netlify.app/"
+    },
+    {
+      id: "03",
+      title: "Productivity SAAS",
+      subtitle: "SAAS Platform",
+      category: "Development",
+      year: "2025",
+      link: "https://productivity-saas-zuned.netlify.app/"
+    },
+    {
+      id: "04",
+      title: "CineRec",
+      subtitle: "ML Recommendation Engine",
+      category: "Development",
+      year: "2025",
+      link: "https://movierecommendation-sbjn.onrender.com/"
+    },
+    {
+      id: "05",
+      title: "Code2Img",
+      subtitle: "Code-to-Image Tool",
+      category: "Development",
+      year: "2025",
+      link: "https://code2img-zuned.netlify.app/"
+    }
+  ];
+
   return (
-    <section id="Works" className="relative z-10 bg-[#151515] text-[#e0ded4] px-6 py-24 md:px-16 lg:px-24 border-t border-white/10">
-      <div className="max-w-7xl mx-auto flex flex-col gap-12">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-8 gap-4">
-          <div>
-            <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest">(PROJECTS)</span>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight uppercase mt-2 font-display">
-              S E L E C T E D   W O R K S  /
-            </h2>
+    <section id="Works" className="relative z-20">
+      <div className="section-padding bg-[var(--color-secondary-400)]">
+        {/* Header Section */}
+        <div className="flex flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
+          <h1 className="section-heading relative text-[var(--color-accent-400)]">
+            SELECTED WORKS /
+          </h1>
+          <div className="grid-gap flex grid-cols-12 sm:justify-end lg:grid">
+            <div className="col-span-7 col-start-1 flex flex-col gap-x-[var(--space-xl)] gap-y-[var(--space-2xs)] sm:col-start-6 sm:flex-row">
+              <span className="flex h-full font-medium uppercase text-nowrap text-[var(--color-secondary-75)]">
+                (PROJECTS)
+              </span>
+              <div className="w-full max-w-[25ch] text-balance font-medium leading-base text-[var(--color-secondary-50)] text-[length:var(--text-base-large)]">
+                Thoughtfully crafted digital experiences that blend utility and aesthetics into something functional, memorable, and refined.
+              </div>
+            </div>
           </div>
-          <p className="max-w-md text-sm md:text-base text-neutral-400">
-            Thoughtfully crafted digital experiences that blend utility and aesthetics into something functional, memorable, and refined.
-          </p>
         </div>
 
-        {/* 12-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Sticky Pagination Left Column */}
-          <div className="lg:col-span-2 sticky top-28 font-mono text-2xl font-bold flex lg:flex-col gap-4 select-none">
-            {portfolioData.projects.map((project, idx) => (
-              <span
-                key={project.id}
-                className={`transition-colors duration-300 ${
-                  activeIndex === idx ? 'text-white' : 'text-neutral-500'
-                }`}
+        {/* 12-Column Grid with Giant Sticky Number and Project Cards */}
+        <div className="grid-gap grid grid-cols-12 pt-[var(--space-lg)]">
+          
+          {/* Left Column: Sticky 22vw Number (01, 02, 03, 04, 05) */}
+          <div className="sticky top-12 col-span-5 hidden h-fit w-full overflow-hidden text-[22vw] font-normal leading-[0.8] text-[var(--color-secondary-50)] md:flex select-none">
+            <span className="relative">0</span>
+            <div className="relative h-[22vw] overflow-hidden">
+              <div 
+                className="flex flex-col transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{ transform: `translateY(-${activeIndex * 20}%)` }}
               >
-                {project.id}
-              </span>
-            ))}
+                <span className="inline-block h-[22vw]">1</span>
+                <span className="inline-block h-[22vw]">2</span>
+                <span className="inline-block h-[22vw]">3</span>
+                <span className="inline-block h-[22vw]">4</span>
+                <span className="inline-block h-[22vw]">5</span>
+              </div>
+            </div>
           </div>
 
-          {/* Project Cards Stack Right Column */}
-          <div className="lg:col-span-10 flex flex-col gap-24">
-            {portfolioData.projects.map((project, idx) => (
+          {/* Right Column: Stacked Project Cards */}
+          <aside className="relative col-span-12 flex flex-col gap-y-[var(--space-xl)] md:col-span-7 md:gap-y-[var(--space-2xl)]">
+            {projects.map((project, idx) => (
               <ProjectCard
-                key={project.id}
+                key={project.id || idx}
                 project={project}
+                index={idx}
                 onRegisterRef={(el) => (cardRefs.current[idx] = el)}
               />
             ))}
-          </div>
+          </aside>
+
         </div>
       </div>
     </section>

@@ -1,54 +1,85 @@
-import { portfolioData } from '../data/portfolioData';
-
 export function Skills() {
-  const { languagesAndTools, frameworksAndLibraries, coreCS } = portfolioData.skills;
+  const skillCategories = [
+    {
+      title: "Languages & Tools",
+      items: [
+        "Python",
+        "SQL",
+        "C++",
+        "Java",
+        "Typescript",
+        "JavaScript",
+        "Git",
+        "Postman",
+        "Docker",
+        "Firebase",
+      ],
+    },
+    {
+      title: "Frameworks & Libraries",
+      items: [
+        "React",
+        "Node.js",
+        "Express.js",
+        "Flask",
+        "Bootstrap",
+        "jQuery",
+        "TailwindCSS",
+        "Framer Motion",
+        "GSAP",
+      ],
+    },
+    {
+      title: "Core CS Concepts",
+      items: [
+        "DSA",
+        "DBMS",
+        "OOP",
+        "Operating Systems",
+        "System Design",
+      ],
+    },
+  ];
 
   return (
-    <div>
-      <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest">
-        D E V E L O P E R &nbsp; D E S I G N E R &nbsp; C R E A T O R /
-      </span>
-      <h2 className="text-4xl md:text-6xl font-bold tracking-tight uppercase mt-2 mb-12 font-display">
-        Skills
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-white/10 pt-8">
-        {/* Col 1 */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-mono text-neutral-400 uppercase tracking-wider mb-2">
-            Languages &amp; Tools
-          </h3>
-          <ul className="flex flex-col gap-2 text-xl md:text-2xl font-bold text-neutral-200">
-            {languagesAndTools.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Col 2 */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-mono text-neutral-400 uppercase tracking-wider mb-2">
-            Frameworks &amp; Libraries
-          </h3>
-          <ul className="flex flex-col gap-2 text-xl md:text-2xl font-bold text-neutral-200">
-            {frameworksAndLibraries.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Col 3 */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-mono text-neutral-400 uppercase tracking-wider mb-2">
-            Core CS Concepts
-          </h3>
-          <ul className="flex flex-col gap-2 text-xl md:text-2xl font-bold text-neutral-200">
-            {coreCS.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
+    <section className="self-start md:px-6 py-5 c370:px-3 px-0 bg-[var(--color-secondary-400)] text-[var(--color-accent-400)] w-full">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="md:text-[length:var(--text-h1-alt)] text-[length:var(--text-menu)] font-bold mb-8 text-center">
+          Skills
+        </h2>
+        <div className="grid grid-cols-3 md:grid-cols-3 c343:gap-1 gap-0 md:gap-5 md:p-5 c370:p-1 p-0">
+          {skillCategories.map((cat, idx) => (
+            <div
+              key={idx}
+              className="c370:p-2 p-0 rounded-2xl shadow-md hover:shadow-lg transition self-start"
+            >
+              <h3 className="hidden md:flex text-xl font-semibold mb-4 text-[var(--color-accent-400)]">
+                {cat.title}
+              </h3>
+              <ul className="space-y-3 md:text-base">
+                {cat.items.map((skill, sIdx) => (
+                  <div
+                    key={sIdx}
+                    className="flex relative items-start gap-2 text-[var(--color-secondary-50)] c343:text-[length:var(--text-base)] text-[length:var(--text-skill)]"
+                  >
+                    <span className="group relative block h-fit overflow-hidden font-medium select-none cursor-pointer">
+                      <span className="block w-full transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-0 group-hover:-translate-y-full">
+                        <span className="font-mono cursor-default">{skill}</span>
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-0 left-0 w-full block transition-transform duration-[0.4s] ease-[cubic-bezier(.51,.92,.24,1.15)] translate-y-full group-hover:translate-y-0 text-[var(--color-accent-200)]"
+                      >
+                        <span className="font-mono cursor-default">{skill}</span>
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
