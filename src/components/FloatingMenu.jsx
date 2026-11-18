@@ -12,13 +12,14 @@ export function FloatingMenu() {
   const contentRef = useRef(null);
 
   useEffect(() => {
-    // Show/hide floating hamburger button based on scroll position (hidden at Hero, appears past Hero)
+    // Show/hide floating hamburger button based on scroll position (hidden at Hero, appears from Services to end of page)
     const ctx = gsap.context(() => {
+      // Ensure hidden on mount
       gsap.set(buttonRef.current, { opacity: 0, scale: 0.8, pointerEvents: 'none' });
 
       ScrollTrigger.create({
         trigger: '#Services',
-        start: 'top 80%',
+        start: 'top 60px',
         onEnter: () => gsap.to(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto', duration: 0.3 }),
         onLeaveBack: () => gsap.to(buttonRef.current, { opacity: 0, scale: 0.8, pointerEvents: 'none', duration: 0.3 })
       });
@@ -59,12 +60,12 @@ export function FloatingMenu() {
 
   return (
     <>
-      {/* Floating Toggle Button */}
+      {/* Floating Toggle Button (Hidden on Hero, appears from Services onwards) */}
       <button
         ref={buttonRef}
         id="menu-toggle-btn"
         onClick={toggle}
-        className={`fixed top-8 right-8 z-[99999999] p-3 bg-[#E8E8E3] rounded-full shadow-lg cursor-pointer hover:bg-white transition-all transform hover:scale-105 ${
+        className={`fixed top-8 right-8 z-[99999999] p-3 bg-[#E8E8E3] rounded-full shadow-lg cursor-pointer hover:bg-white transition-all transform hover:scale-105 opacity-0 pointer-events-none ${
           isOpen ? 'menu-btn-active' : ''
         }`}
         aria-label="Toggle navigation menu"

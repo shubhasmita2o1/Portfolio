@@ -1,22 +1,22 @@
 @font-face {
   font-family: 'montreal';
-  src: url('/fonts/772d87814c6d4363-s.p.woff2') format('woff2');
+  src: url('/fonts/77884a8189c63c95-s.p.woff2') format('woff2');
   font-display: swap;
-  font-weight: 200 900;
+  font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PP Neue Montreal';
-  src: url('/fonts/772d87814c6d4363-s.p.woff2') format('woff2');
+  src: url('/fonts/77884a8189c63c95-s.p.woff2') format('woff2');
   font-display: swap;
-  font-weight: 200 900;
+  font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PP Neue Montreal - Regular';
-  src: url('/fonts/772d87814c6d4363-s.p.woff2') format('woff2');
+  src: url('/fonts/77884a8189c63c95-s.p.woff2') format('woff2');
   font-display: swap;
   font-weight: 400;
   font-style: normal;
@@ -32,7 +32,7 @@
 
 @font-face {
   font-family: 'montrealMono';
-  src: url('/fonts/77884a8189c63c95-s.p.woff2') format('woff2');
+  src: url('/fonts/772d87814c6d4363-s.p.woff2') format('woff2');
   font-display: swap;
   font-weight: 500;
   font-style: normal;

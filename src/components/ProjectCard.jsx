@@ -203,22 +203,31 @@ export function ProjectCard({ project, index, onRegisterRef }) {
       >
         <div className="custom-cursor-area relative mt-5 flex aspect-square items-center justify-center overflow-clip rounded-md bg-[var(--color-secondary-300)] p-[var(--space-md)] sm:p-[var(--space-lg)] xl:p-[var(--space-2xl)]">
           <div className="z-10 aspect-[4/3] w-full overflow-clip rounded-lg border border-white/10 shadow-2xl transition-transform duration-700 ease-out group-hover:scale-[1.02]">
-            {renderPreview()}
+            {project.thumbnail ? (
+              <img
+                src={project.thumbnail}
+                alt={project.title}
+                className="w-full h-full object-cover select-none"
+                loading="lazy"
+              />
+            ) : (
+              renderPreview()
+            )}
           </div>
         </div>
 
         <div className="flex flex-col justify-between gap-y-[var(--space-sm)] pt-[var(--space-xs)] lg:flex-row">
           <div className="flex flex-col gap-y-[var(--space-3xs)]">
-            <span className="font-mono text-[length:var(--text-base-small)] font-medium text-[var(--color-secondary-50)]">
-              <h1 className="font-mono cursor-default">{project.subtitle}</h1>
+            <span className="font-mono text-[length:var(--text-base-small)] font-medium uppercase text-[var(--color-secondary-50)]">
+              <span className="cursor-default">{project.subtitle}</span>
             </span>
             <div className="w-fit text-[length:var(--text-heading-3)] font-semibold text-[var(--color-accent-400)]">
-              <h1 className="font-mono cursor-default tracking-wide">{displayText}</h1>
+              <h3 className="cursor-default tracking-tight font-editorial">{displayText}</h3>
             </div>
           </div>
           <div className="flex items-end gap-x-[var(--space-3xs)] tracking-base text-[var(--color-secondary-50)]">
-            <span className="tag">{project.category || "Development"}</span>
-            <span className="tag border-[var(--color-secondary-50)] bg-[var(--color-secondary-50)] text-[var(--color-secondary-400)]">
+            <span className="tag px-3 py-1 rounded-full border border-white/10 font-mono text-xs uppercase">{project.category || "Development"}</span>
+            <span className="tag px-3 py-1 rounded-full border border-[var(--color-secondary-50)] bg-[var(--color-secondary-50)] text-[var(--color-secondary-400)] font-mono text-xs">
               {project.year || "2025"}
             </span>
           </div>

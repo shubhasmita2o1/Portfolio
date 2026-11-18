@@ -1,14 +1,16 @@
 export const portfolioData = {
-  personal: {
-    name: "ZUNED AALIM",
-    role: "Web Developer & Designer",
-    availability: "AVAILABLE FOR WORK",
-    period: "NOV'26",
-    email: "contact@zunedaalim.com",
-    tagline: "I build fast, modern websites that help businesses grow, available for freelance projects worldwide.",
-    portraitImage: "https://zunedaalim.com/1.webp",
-    portraitFallback: "https://images.unsplash.com/photo-1524813686514-a57563d77d66?q=80&w=1000&auto=format&fit=crop"
-  },
+  
+personal: {
+  name: "SHUBHASMITA",
+  role: "Full Stack Developer",
+  availability: "AVAILABLE FOR WORK",
+  period: "NOV'26",
+  email: "shubhasmita20.sahu@gmail.com",
+  tagline: "I build fast, modern websites that help businesses grow.",
+  portraitImage: "/1.webp",
+  portraitFallback: "https://images.unsplash.com/photo-1524813686514-a57563d77d66?q=80&w=1000&auto=format&fit=crop"
+},
+
 
   services: [
     {
@@ -116,9 +118,7 @@ export const portfolioData = {
   },
 
   socials: [
-    { name: "Linkedin", url: "https://www.linkedin.com/in/zunedaalim/" },
-    { name: "Instagram", url: "https://www.instagram.com/zuned_aalim/" },
-    { name: "Github", url: "https://github.com/zunedaalim" },
-    { name: "Leetcode", url: "https://leetcode.com/u/zunedaalim1/" }
+    { name: "Linkedin", url: "https://www.linkedin.com/in/shubhasmita20sahu/" },
+    { name: "Github", url: "https://github.com/shubhasmita2o1" },
   ]
 };
