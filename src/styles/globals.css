@@ -247,7 +247,7 @@ body {
 /* Hero Name Letter styling */
 .name-letter {
   font-family: var(--font-editorial);
-  font-weight: 700;
+  font-weight: 800;
   fill: var(--color-secondary-400);
   color: var(--color-secondary-400);
   text-rendering: geometricPrecision;

@@ -23,7 +23,7 @@ export function Hero() {
 
     const ctx = gsap.context(() => {
       const letters = svgRef.current ? svgRef.current.querySelectorAll('.name-letter') : [];
-      if (letters.length > 0) gsap.set(letters, { y: 170 });
+      if (letters.length > 0) gsap.set(letters, { y: 200 });
 
       const mobileSpans = mobileWordsRef.current ? mobileWordsRef.current.querySelectorAll('.mobile-word') : [];
       if (mobileSpans.length > 0) gsap.set(mobileSpans, { yPercent: 110 });
@@ -199,31 +199,31 @@ export function Hero() {
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ overflow: 'visible' }}
               >
-                {/* Evenly distributed single-name letters */}
+                {/* Evenly distributed dominant single-name letters */}
                 {[
                   { char: 'S', x: 0 },
-                  { char: 'H', x: 132 },
-                  { char: 'U', x: 274 },
-                  { char: 'B', x: 415 },
-                  { char: 'H', x: 551 },
-                  { char: 'A', x: 693 },
-                  { char: 'S', x: 829 },
-                  { char: 'M', x: 961 },
-                  { char: 'I', x: 1126 },
-                  { char: 'T', x: 1204 },
-                  { char: 'A', x: 1332 },
+                  { char: 'H', x: 128 },
+                  { char: 'U', x: 269 },
+                  { char: 'B', x: 410 },
+                  { char: 'H', x: 543 },
+                  { char: 'A', x: 684 },
+                  { char: 'S', x: 819 },
+                  { char: 'M', x: 947 },
+                  { char: 'I', x: 1119 },
+                  { char: 'T', x: 1175 },
+                  { char: 'A', x: 1297 },
                 ].map((item, index) => (
                   <text
                     key={index}
                     x={item.x}
-                    y="136"
+                    y="152"
                     className="name-letter font-editorial"
                     style={{
-                      transform: 'translateY(170px)',
+                      transform: 'translateY(200px)',
                       willChange: 'transform',
                       fontFamily: "montreal, 'PP Neue Montreal', sans-serif",
-                      fontWeight: 700,
-                      fontSize: '148px',
+                      fontWeight: 800,
+                      fontSize: '196px',
                       fill: 'var(--color-secondary-400, #080807)',
                     }}
                   >
