@@ -1,22 +1,3 @@
-# Shubhasmita Sahu — Full-Stack Developer & Designer Portfolio
-
-A high-performance, modern developer portfolio for **Shubhasmita Sahu**, engineered with **React**, **Vite**, **Tailwind CSS**, **GSAP 3 + ScrollTrigger**, and **Lenis smooth scrolling**. Features an editorial design with kinetic typography, sticky stacking cards, interactive scramble text, and seamless micro-interactions.
-
----
-
-## 👩‍💻 About Shubhasmita Sahu
-
-**Shubhasmita Sahu** is a Full-Stack Developer and Software Engineer driven by a passion for transforming ideas into clean, scalable, and intuitive digital experiences.
-
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS, GSAP, HTML5, CSS3, Modern UI/UX
-- **Backend & Cloud:** Java, Spring Boot, Node.js, Express.js, REST APIs, Firebase, Docker
-- **Databases & CS:** PostgreSQL, MongoDB, MySQL, Data Structures & Algorithms, DBMS, OOP, System Design
-- **Email:** [shubhasmita20.sahu@gmail.com](mailto:shubhasmita20.sahu@gmail.com)
-- **LinkedIn:** [shubhasmita20sahu](https://www.linkedin.com/in/shubhasmita20sahu/)
-- **GitHub:** [shubhasmita2o1](https://github.com/shubhasmita2o1)
-
----
-
 ## 🛠️ Technology Stack
 
 | Technology | Purpose |
@@ -134,4 +115,4 @@ All portfolio content is centralized in **`src/data/portfolioData.js`**:
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+
