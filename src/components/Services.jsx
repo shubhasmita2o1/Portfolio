@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { portfolioData } from '../data/portfolioData';
@@ -38,7 +38,7 @@ export function Services() {
       description: "Good design feels effortless. I design and develop responsive, intuitive interfaces that work smoothly across devices, with a strong focus on clarity, accessibility, and performance.",
       features: [
         "NextJs, TailwindCSS, GSAP",
-        "Figma → Pixel-perfect code",
+        "Figma â†’ Pixel-perfect code",
         "HTML, CSS, JavaScript"
       ]
     },
@@ -71,16 +71,16 @@ export function Services() {
       if (!stage || !row1 || !row2 || !row3 || !header1 || !header2) return;
 
       // Dynamic header height getters
-      const getH1 = () => header1.offsetHeight || 60;
-      const getH2 = () => header2.offsetHeight || 60;
+      const getH1 = () => Math.min(header1.offsetHeight || 75, 95);
+      const getH2 = () => Math.min(header2.offsetHeight || 75, 95);
 
       // Update stage height so the container exactly holds all 3 stacked rows and skills,
       // allowing the following section (SelectedWorks) to scroll up naturally right below it
       const updateStageHeight = () => {
         const h1 = getH1();
         const h2 = getH2();
-        const h3Total = row3.offsetHeight || 380;
-        stage.style.height = `${h1 + h2 + h3Total + 40}px`;
+        const h3Total = row3.offsetHeight || 340;
+        stage.style.height = `${h1 + h2 + h3Total + 30}px`;
       };
 
       updateStageHeight();
@@ -197,11 +197,11 @@ export function Services() {
           {/* Header 1 */}
           <div
             ref={header1Ref}
-            className="border-t border-[var(--color-secondary-300)] py-2.5 md:py-3 bg-[var(--color-secondary-400)] select-none"
+            className="border-t border-[var(--color-secondary-300)] py-2 md:py-2.5 bg-[var(--color-secondary-400)] select-none"
           >
-            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
-              <span className="col-span-2 tracking-tight">(01)</span>
-              <h3 className="col-span-8 col-start-6 tracking-tight">
+            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] leading-tight md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
+              <span className="col-span-2 tracking-tight leading-tight">(01)</span>
+              <h3 className="col-span-8 col-start-6 tracking-tight leading-tight">
                 {services[0]?.title || "Full-Stack Development"}
               </h3>
             </div>
@@ -213,20 +213,20 @@ export function Services() {
             className="bg-[var(--color-secondary-400)] pt-1 pb-3"
           >
             <div className="grid-gap relative flex flex-col place-items-start md:grid md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-3 text-[length:var(--text-heading-4)]">
-                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-relaxed text-[var(--color-secondary-50)]">
+              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-2.5 text-[length:var(--text-heading-4)]">
+                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-50)]">
                   {services[0]?.description}
                 </p>
                 <div className="flex flex-col divide-y divide-[var(--color-secondary-200)] pt-1">
                   {services[0]?.features?.map((feat, fIdx) => (
                     <div
                       key={fIdx}
-                      className="flex items-baseline gap-x-[var(--space-sm)] py-1.5 md:py-2 xl:gap-x-[var(--space-md)]"
+                      className="flex items-baseline gap-x-[var(--space-sm)] py-1 md:py-1.5 xl:gap-x-[var(--space-md)]"
                     >
-                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-[200%] text-[var(--color-secondary-75)] mr-4 select-none">
+                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-none text-[var(--color-secondary-75)] mr-4 select-none">
                         0{fIdx + 1}
                       </span>
-                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)]">
+                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)] leading-snug">
                         {feat}
                       </span>
                     </div>
@@ -246,11 +246,11 @@ export function Services() {
           {/* Header 2 */}
           <div
             ref={header2Ref}
-            className="border-t border-[var(--color-secondary-300)] py-2.5 md:py-3 bg-[var(--color-secondary-400)] select-none"
+            className="border-t border-[var(--color-secondary-300)] py-2 md:py-2.5 bg-[var(--color-secondary-400)] select-none"
           >
-            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
-              <span className="col-span-2 tracking-tight">(02)</span>
-              <h3 className="col-span-8 col-start-6 tracking-tight">
+            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] leading-tight md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
+              <span className="col-span-2 tracking-tight leading-tight">(02)</span>
+              <h3 className="col-span-8 col-start-6 tracking-tight leading-tight">
                 {services[1]?.title || "UI/UX & Frontend"}
               </h3>
             </div>
@@ -262,20 +262,20 @@ export function Services() {
             className="bg-[var(--color-secondary-400)] pt-1 pb-3"
           >
             <div className="grid-gap relative flex flex-col place-items-start md:grid md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-3 text-[length:var(--text-heading-4)]">
-                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-relaxed text-[var(--color-secondary-50)]">
+              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-2.5 text-[length:var(--text-heading-4)]">
+                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-50)]">
                   {services[1]?.description}
                 </p>
                 <div className="flex flex-col divide-y divide-[var(--color-secondary-200)] pt-1">
                   {services[1]?.features?.map((feat, fIdx) => (
                     <div
                       key={fIdx}
-                      className="flex items-baseline gap-x-[var(--space-sm)] py-1.5 md:py-2 xl:gap-x-[var(--space-md)]"
+                      className="flex items-baseline gap-x-[var(--space-sm)] py-1 md:py-1.5 xl:gap-x-[var(--space-md)]"
                     >
-                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-[200%] text-[var(--color-secondary-75)] mr-4 select-none">
+                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-none text-[var(--color-secondary-75)] mr-4 select-none">
                         0{fIdx + 1}
                       </span>
-                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)]">
+                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)] leading-snug">
                         {feat}
                       </span>
                     </div>
@@ -295,11 +295,11 @@ export function Services() {
           {/* Header 3 */}
           <div
             ref={header3Ref}
-            className="border-t border-[var(--color-secondary-300)] py-2.5 md:py-3 bg-[var(--color-secondary-400)] select-none"
+            className="border-t border-[var(--color-secondary-300)] py-2 md:py-2.5 bg-[var(--color-secondary-400)] select-none"
           >
-            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
-              <span className="col-span-2 tracking-tight">(03)</span>
-              <h3 className="col-span-8 col-start-6 tracking-tight">
+            <div className="flex grid-cols-12 items-center justify-start gap-x-[var(--space-xs)] text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] leading-tight md:grid md:justify-between md:gap-x-[var(--gap-fluid)]">
+              <span className="col-span-2 tracking-tight leading-tight">(03)</span>
+              <h3 className="col-span-8 col-start-6 tracking-tight leading-tight">
                 {services[2]?.title || "Optimization"}
               </h3>
             </div>
@@ -311,20 +311,20 @@ export function Services() {
             className="bg-[var(--color-secondary-400)] pt-1 pb-3"
           >
             <div className="grid-gap relative flex flex-col place-items-start md:grid md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-3 text-[length:var(--text-heading-4)]">
-                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-relaxed text-[var(--color-secondary-50)]">
+              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-2 md:gap-y-2.5 text-[length:var(--text-heading-4)]">
+                <p className="max-w-[40ch] text-balance text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-50)]">
                   {services[2]?.description}
                 </p>
                 <div className="flex flex-col divide-y divide-[var(--color-secondary-200)] pt-1">
                   {services[2]?.features?.map((feat, fIdx) => (
                     <div
                       key={fIdx}
-                      className="flex items-baseline gap-x-[var(--space-sm)] py-1.5 md:py-2 xl:gap-x-[var(--space-md)]"
+                      className="flex items-baseline gap-x-[var(--space-sm)] py-1 md:py-1.5 xl:gap-x-[var(--space-md)]"
                     >
-                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-[200%] text-[var(--color-secondary-75)] mr-4 select-none">
+                      <span className="font-mono text-[length:var(--text-base)] font-medium leading-none text-[var(--color-secondary-75)] mr-4 select-none">
                         0{fIdx + 1}
                       </span>
-                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)]">
+                      <span className="font-bold text-[var(--color-accent-500)] text-[length:var(--text-heading-4)] leading-snug">
                         {feat}
                       </span>
                     </div>

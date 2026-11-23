@@ -190,7 +190,7 @@ body {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: #1c1b18;
+  background-color: transparent;
   pointer-events: all;
   overflow: hidden;
 }
@@ -200,7 +200,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% + 300px);
+  height: 100%;
 }
 
 /* Custom Lerp Cursor */
