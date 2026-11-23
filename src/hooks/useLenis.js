@@ -32,7 +32,20 @@ export function useLenis() {
     gsap.ticker.add(updateTicker);
     gsap.ticker.lagSmoothing(0);
 
+    // Refresh ScrollTrigger when fonts and layout settle
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        ScrollTrigger.refresh();
+      });
+    }
+
+    const onHeroEnter = () => {
+      setTimeout(() => ScrollTrigger.refresh(), 100);
+    };
+    window.addEventListener('hero-enter', onHeroEnter);
+
     return () => {
+      window.removeEventListener('hero-enter', onHeroEnter);
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
     };

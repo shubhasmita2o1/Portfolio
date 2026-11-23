@@ -80,7 +80,7 @@ export function FloatingMenu() {
       <div
         ref={drawerRef}
         id="drawer-overlay"
-        className="fixed top-0 right-0 z-[99999998] h-screen w-screen justify-end backdrop-blur-2xl bg-black/85 text-[#eae8dc] hidden"
+        className="fixed top-0 right-0 z-[99999998] h-screen w-screen justify-end backdrop-blur-3xl bg-black/55 supports-[backdrop-filter]:bg-black/40 text-[#eae8dc] hidden"
       >
         <div
           ref={contentRef}

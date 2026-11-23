@@ -1,19 +1,85 @@
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Skills } from './Skills';
 
+gsap.registerPlugin(ScrollTrigger);
+
+const TITLE_LINES = ['DEVELOPER', 'DESIGNER', 'CREATOR/'];
+
 export function About() {
+  const sectionRef = useRef(null);
+  const titleRef = useRef(null);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    if (prefersReducedMotion) return;
+
+    let ctx;
+    const rafId = requestAnimationFrame(() => {
+      ctx = gsap.context(() => {
+        const letterEls = titleRef.current?.querySelectorAll('.letter');
+        if (letterEls?.length) {
+          gsap.fromTo(
+            letterEls,
+            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 0,
+              opacity: 1,
+              duration: 0.85,
+              stagger: 0.025,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: titleRef.current,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
+      });
+      ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
   return (
-    <section id="About" className="mt-[-2vh] relative z-20">
+    <section id="About" ref={sectionRef} className="mt-[-2vh] relative z-20">
       <div className="relative">
         <div className="section-padding sm:pb-[10em] pb-[5em] flex flex-col gap-y-[var(--space-lg)] rounded-b-3xl bg-[var(--color-secondary-400)] lg:gap-y-[var(--space-2xl)] md:pt-[15vh]">
           
           {/* Top Custom Grid: DEVELOPER / DESIGNER / CREATOR/ + Skills */}
           <div className="custom-grid">
-            <h2 className="section-heading cs5:text-[length:var(--text-h1-display)] text-[length:var(--text-menu)] relative z-30 flex w-full flex-col col-span-full leading-none text-[var(--color-accent-400)] mix-blend-exclusion lg:col-span-8 lg:col-end-7 mt-[1em] mb-[1em] order-2 md:order-1 font-bold">
-              <span>DEVELOPER</span>
-              <span>DESIGNER</span>
-              <span>CREATOR/</span>
+            <h2
+              ref={titleRef}
+              className="section-heading cs5:text-[length:var(--text-h1-display)] text-[length:var(--text-menu)] relative z-30 flex w-full flex-col col-span-full leading-none text-[var(--color-accent-400)] mix-blend-exclusion lg:col-span-6 mb-8 lg:mb-0 order-1 font-bold"
+            >
+              {TITLE_LINES.map((line, lineIdx) => (
+                <div key={lineIdx} className="overflow-hidden py-[0.08em] -my-[0.08em]">
+                  <span className="inline-block">
+                    {line.split('').map((char, charIdx) =>
+                      char === ' ' ? (
+                        <span key={charIdx} className="inline-block">
+                          &nbsp;
+                        </span>
+                      ) : (
+                        <span key={charIdx} className="inline-block letter">
+                          {char}
+                        </span>
+                      )
+                    )}
+                  </span>
+                </div>
+              ))}
             </h2>
-            <div className="relative z-0 lg:col-span-6 col-span-full flex w-full items-center overflow-clip rounded-md md:items-end order-1 md:order-2">
+            <div className="relative z-0 lg:col-span-6 col-span-full flex w-full items-start order-2">
               <Skills />
             </div>
           </div>

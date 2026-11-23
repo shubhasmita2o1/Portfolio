@@ -7,9 +7,13 @@ import { ProjectCard } from './ProjectCard';
 gsap.registerPlugin(ScrollTrigger);
 
 export function SelectedWorks() {
+  const sectionRef = useRef(null);
   const digitStripRef = useRef(null);
   const activeIndexRef = useRef(0);
   const cardRefs = useRef([]);
+  const headingRef = useRef(null);
+
+  const headingChars = 'SELECTED WORKS /'.split('');
 
   const defaultProjects = [
     {
@@ -92,6 +96,28 @@ export function SelectedWorks() {
     let ctx;
     const rafId = requestAnimationFrame(() => {
       ctx = gsap.context(() => {
+        // Masked letter-by-letter reveal for SELECTED WORKS /
+        const letterEls = headingRef.current?.querySelectorAll('.letter');
+        if (letterEls?.length) {
+          gsap.fromTo(
+            letterEls,
+            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 0,
+              opacity: 1,
+              duration: 0.85,
+              stagger: 0.03,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: headingRef.current || sectionRef.current || '#Works',
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
+
         // Symmetric boundary triggers between consecutive cards:
         // When card[i] crosses the 50% viewport line downward -> index becomes i
         // When card[i] crosses the 50% viewport line upward (leaveBack) -> index becomes i - 1
@@ -142,12 +168,26 @@ export function SelectedWorks() {
   }, [projects.length]);
 
   return (
-    <section id="Works" className="relative z-20">
+    <section id="Works" ref={sectionRef} className="relative z-20">
       <div className="section-padding bg-[var(--color-secondary-400)]">
         {/* Header Section */}
         <div className="flex flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
           <h2 className="section-heading relative text-[var(--color-accent-400)] text-[length:var(--text-h1-alt)] md:text-[length:var(--text-h1)]">
-            SELECTED WORKS /
+            <div className="overflow-hidden">
+              <span ref={headingRef} className="inline-block">
+                {headingChars.map((char, i) =>
+                  char === ' ' ? (
+                    <span key={i} className="inline-block">
+                      &nbsp;
+                    </span>
+                  ) : (
+                    <span key={i} className="inline-block letter">
+                      {char}
+                    </span>
+                  )
+                )}
+              </span>
+            </div>
           </h2>
           <div className="grid-gap flex grid-cols-12 sm:justify-end lg:grid">
             <div className="col-span-7 col-start-1 flex flex-col gap-x-[var(--space-xl)] gap-y-[var(--space-2xs)] sm:col-start-6 sm:flex-row">

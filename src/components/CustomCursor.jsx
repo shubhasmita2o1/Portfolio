@@ -30,8 +30,9 @@ export function CustomCursor() {
 
         const hovered = document.elementsFromPoint(mouseX, mouseY);
         const isOverCard = hovered.some((el) => el.classList && el.classList.contains('custom-cursor-area'));
+        const isOverMenu = hovered.some((el) => el.closest && el.closest('#menu-toggle-btn, #drawer-overlay, header'));
 
-        cursorRef.current.style.opacity = isOverCard ? '1' : '0';
+        cursorRef.current.style.opacity = isOverCard && !isOverMenu ? '1' : '0';
       }
 
       rafId = requestAnimationFrame(loop);
