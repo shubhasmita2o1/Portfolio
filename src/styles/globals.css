@@ -243,3 +243,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-400);
 }
+
+/* Hero Name Letter styling */
+.name-letter {
+  font-family: var(--font-editorial);
+  font-weight: 700;
+  fill: var(--color-secondary-400);
+  color: var(--color-secondary-400);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}

@@ -22,9 +22,8 @@ export function Hero() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // Ensure elements are set at their hidden starting positions
-      const paths = svgRef.current ? svgRef.current.querySelectorAll('path') : [];
-      if (paths.length > 0) gsap.set(paths, { y: 170 });
+      const letters = svgRef.current ? svgRef.current.querySelectorAll('.name-letter') : [];
+      if (letters.length > 0) gsap.set(letters, { y: 170 });
 
       const mobileSpans = mobileWordsRef.current ? mobileWordsRef.current.querySelectorAll('.mobile-word') : [];
       if (mobileSpans.length > 0) gsap.set(mobileSpans, { yPercent: 110 });
@@ -43,7 +42,7 @@ export function Hero() {
 
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-        // 1. Center Image unfolds vertically from center slit with image de-scaling
+        // 1. Image unfold
         if (imageWrapRef.current) {
           tl.to(imageWrapRef.current, {
             clipPath: 'inset(0% 0% 0% 0% round 8px)',
@@ -59,12 +58,12 @@ export function Hero() {
           }, 0);
         }
 
-        // 2. SVG Letter Paths stagger-reveal upwards from below baseline
-        if (paths.length > 0) {
-          tl.to(paths, {
+        // 2. Name letters stagger up
+        if (letters.length > 0) {
+          tl.to(letters, {
             y: 0,
             duration: 1.0,
-            stagger: 0.045,
+            stagger: 0.04,
             ease: 'power4.out',
             force3D: true
           }, 0.1);
@@ -79,7 +78,7 @@ export function Hero() {
           }, 0.1);
         }
 
-        // 3. Left Column: Arrow fades and scales in, Manifesto and CTA slide up
+        // 3. Left side content
         if (arrowRef.current) {
           tl.to(arrowRef.current, {
             opacity: 1,
@@ -106,7 +105,7 @@ export function Hero() {
           }, 0.4);
         }
 
-        // 4. Right Column: Status and Date slide up
+        // 4. Right side content
         if (statusRef.current) {
           tl.to(statusRef.current, {
             yPercent: 0,
@@ -125,10 +124,42 @@ export function Hero() {
         }
       };
 
+      // Dynamic optical distribution of letters to ensure mathematically equal spacing across all 11 letters
+      const updateLetterSpacing = () => {
+        if (!svgRef.current) return;
+        const letterNodes = svgRef.current.querySelectorAll('.name-letter');
+        if (letterNodes.length !== 11) return;
+
+        const widths = [];
+        for (let i = 0; i < letterNodes.length; i++) {
+          const len = letterNodes[i].getComputedTextLength();
+          if (!len || len <= 0) return;
+          widths.push(len);
+        }
+
+        const totalWidth = 1430;
+        const sumWidths = widths.reduce((acc, w) => acc + w, 0);
+        const remaining = totalWidth - sumWidths;
+        const gap = remaining / (widths.length - 1);
+
+        let currentX = 0;
+        letterNodes.forEach((node, i) => {
+          node.setAttribute('x', currentX.toFixed(1));
+          currentX += widths[i] + gap;
+        });
+      };
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(updateLetterSpacing);
+      } else {
+        setTimeout(updateLetterSpacing, 50);
+      }
+      window.addEventListener('resize', updateLetterSpacing);
+
       window.addEventListener('hero-enter', playEntrance);
       const fallbackTimer = setTimeout(playEntrance, 1200);
 
-      // Existing ScrollTrigger parallax
+      // Parallax on scroll
       gsap.to(containerRef.current, {
         scale: 0.94,
         opacity: 0.85,
@@ -143,6 +174,7 @@ export function Hero() {
 
       return () => {
         window.removeEventListener('hero-enter', playEntrance);
+        window.removeEventListener('resize', updateLetterSpacing);
         clearTimeout(fallbackTimer);
       };
     }, containerRef);
@@ -156,50 +188,70 @@ export function Hero() {
         <div ref={containerRef} className="section-padding-equal sticky top-0 flex h-svh items-end bg-[#E8E8E3]">
           <div className="relative flex w-full flex-col md:gap-y-[var(--space-lg)]">
             
-            {/* SVG Name Banner (Exact production paths and scaling) */}
-            <h1 className="text-[length:var(--text-h1)] overflow-clip">
+            {/* ========== NAME BANNER ========== */}
+            <h1 className="w-full overflow-clip leading-none">
               <svg
                 ref={svgRef}
-                width="1430"
+                width="100%"
                 height="163"
                 viewBox="0 0 1430 163"
-                className="hidden h-full w-full md:block text-[#080807]"
+                className="hidden h-auto w-full md:block text-[#080807]"
                 xmlns="http://www.w3.org/2000/svg"
+                style={{ overflow: 'visible' }}
               >
-                {/* Z */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M0.169983 160V138.53L89.44 15.586V24.852H0.169983V0.669983H117.238V21.914L27.742 144.858V135.818H120.176V160H0.169983Z" fill="currentColor" />
-                {/* U */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M200.27 162.26C177.519 162.26 160.569 156.61 149.42 145.31C138.421 133.859 132.922 116.985 132.922 94.686V0.669983H162.076V94.46C162.076 108.623 165.089 119.32 171.116 126.552C177.293 133.784 187.011 137.4 200.27 137.4C212.926 137.4 222.418 133.784 228.746 126.552C235.225 119.32 238.464 108.623 238.464 94.46V0.669983H267.166V94.686C267.166 116.985 261.516 133.859 250.216 145.31C239.067 156.61 222.418 162.26 200.27 162.26Z" fill="currentColor" />
-                {/* N */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M289.819 160V0.669983H311.741L404.175 120.224H398.299V0.669983H425.419V160H403.497L311.289 40.446H316.939V160H289.819Z" fill="currentColor" />
-                {/* E */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M449.123 160V0.669983H556.473V23.496H477.147V67.566H551.275V90.618H477.147V136.948H556.473V160H449.123Z" fill="currentColor" />
-                {/* D */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M572.231 160V0.669983H630.087C648.317 0.669983 663.685 3.83398 676.191 10.162C688.847 16.3393 698.414 25.3793 704.893 37.282C711.371 49.034 714.611 63.3473 714.611 80.222C714.611 96.946 711.371 111.259 704.893 123.162C698.414 135.065 688.847 144.18 676.191 150.508C663.685 156.836 648.317 160 630.087 160H572.231ZM601.385 135.818H628.279C647.564 135.818 661.877 131.223 671.219 122.032C680.56 112.841 685.231 98.9047 685.231 80.222C685.231 61.3887 680.56 47.452 671.219 38.412C661.877 29.2213 647.564 24.626 628.279 24.626H601.385V135.818Z" fill="currentColor" />
-                {/* A (1) */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M766.169 160L838.263 0.669983H862.671L935.669 160H906.063L886.627 115.252L898.379 123.162H802.781L814.985 115.252L795.549 160H766.169ZM850.241 31.858L818.375 107.342L812.499 100.336H888.435L883.689 107.342L851.145 31.858H850.241Z" fill="currentColor" />
-                {/* A (2) */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M924.369 160L996.463 0.669983H1020.87L1093.87 160H1064.26L1044.83 115.252L1056.58 123.162H960.981L973.185 115.252L953.749 160H924.369ZM1008.44 31.858L976.575 107.342L970.699 100.336H1046.63L1041.89 107.342L1009.34 31.858H1008.44Z" fill="currentColor" />
-                {/* L */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M1100.2 160V0.669983H1129.35V135.366H1204.38V160H1100.2Z" fill="currentColor" />
-                {/* I */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M1215.36 160V0.669983H1244.51V160H1215.36Z" fill="currentColor" />
-                {/* M */}
-                <path style={{ transform: 'translateY(170px)', willChange: 'transform' }} d="M1268.51 160V0.669983H1294.05L1352.58 132.428H1345.58L1404.11 0.669983H1429.42V160H1402.98V41.802H1411.12L1357.55 160H1340.15L1286.59 41.802H1294.95V160H1268.51Z" fill="currentColor" />
+                {/* Evenly distributed single-name letters */}
+                {[
+                  { char: 'S', x: 0 },
+                  { char: 'H', x: 132 },
+                  { char: 'U', x: 274 },
+                  { char: 'B', x: 415 },
+                  { char: 'H', x: 551 },
+                  { char: 'A', x: 693 },
+                  { char: 'S', x: 829 },
+                  { char: 'M', x: 961 },
+                  { char: 'I', x: 1126 },
+                  { char: 'T', x: 1204 },
+                  { char: 'A', x: 1332 },
+                ].map((item, index) => (
+                  <text
+                    key={index}
+                    x={item.x}
+                    y="136"
+                    className="name-letter font-editorial"
+                    style={{
+                      transform: 'translateY(170px)',
+                      willChange: 'transform',
+                      fontFamily: "montreal, 'PP Neue Montreal', sans-serif",
+                      fontWeight: 700,
+                      fontSize: '148px',
+                      fill: 'var(--color-secondary-400, #080807)',
+                    }}
+                  >
+                    {item.char}
+                  </text>
+                ))}
               </svg>
 
-              {/* Mobile Fallback (< md) */}
-              <span ref={mobileWordsRef} className="flex flex-col text-[length:var(--text-heading-display)] font-semibold uppercase leading-[80%] tracking-tight text-[var(--color-secondary-400)] md:hidden font-editorial">
-                <span className="block overflow-clip"><span className="mobile-word block">ZUNED</span></span>
-                <span className="block overflow-clip"><span className="mobile-word block">AALIM</span></span>
-              </span>
+              {/* Mobile version */}
+              <div
+                ref={mobileWordsRef}
+                className="flex w-full flex-col md:hidden select-none"
+              >
+                <div className="block overflow-clip w-full">
+                  <span className="mobile-word block font-editorial font-bold uppercase leading-none tracking-tight text-[var(--color-secondary-400)] text-[length:clamp(2.1rem,8.6vw,3.6rem)] text-center sm:text-left">
+                    SHUBHASMITA
+                  </span>
+                </div>
+              </div>
             </h1>
 
-            {/* 3-Column Lower Content Grid */}
+            {/* ========== LOWER CONTENT ========== */}
             <div className="relative grid w-full grid-cols-12 justify-between gap-x-[var(--gap-fluid)] gap-y-[var(--space-md)]">
-              {/* Left Column: Arrow, Manifesto, Animated Rolling Pill Button */}
+              
+              {/* Left Column */}
               <div className="col-span-12 flex flex-col justify-between gap-y-[var(--space-2xl)] pt-[var(--space-sm)] md:col-span-4 md:gap-y-[var(--space-md)]">
                 <div className="grid-gap flex flex-col gap-[var(--space-md)] md:gap-y-[var(--space-xl)]">
+                  
                   {/* Arrow */}
                   <div className="hidden overflow-clip md:block">
                     <span ref={arrowRef} className="block">
@@ -210,7 +262,7 @@ export function Hero() {
                     </span>
                   </div>
 
-                  {/* Manifesto and CTA */}
+                  {/* Manifesto + Button */}
                   <div className="flex flex-col gap-y-[var(--space-sm)] md:gap-y-[var(--space-md)]">
                     <div className="overflow-clip">
                       <div ref={manifestoRef} className="w-full max-w-[32ch] text-balance text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-100)] xl:text-[length:var(--text-base-large)] 3xl:text-[length:var(--text-heading-body)]">
@@ -240,31 +292,48 @@ export function Hero() {
                 </div>
               </div>
 
-              {/* Center Column: Grayscale Image */}
+              {/* Center Image */}
               <div className="col-span-4 flex flex-col items-start md:items-center">
                 <div className="flex h-fit w-fit flex-col items-center justify-center gap-y-[var(--space-2xs)] overflow-hidden rounded-md">
-                  <div ref={imageWrapRef} style={{ clipPath: 'inset(50% 0% 50% 0% round 8px)', willChange: 'clip-path' }} className="pointer-events-none h-[15vh] max-w-lg rounded-lg md:h-[50vh] overflow-hidden">
-                    <img ref={imageRef} style={{ transform: 'scale(1.25)', willChange: 'transform' }} alt="Map Interior" width="1536" height="2040" className="h-full w-full object-cover object-center grayscale" src="/1.webp" />
+                  <div
+                    ref={imageWrapRef}
+                    style={{ clipPath: 'inset(50% 0% 50% 0% round 8px)', willChange: 'clip-path' }}
+                    className="pointer-events-none h-[15vh] max-w-lg rounded-lg md:h-[50vh] overflow-hidden"
+                  >
+                    <img
+                      ref={imageRef}
+                      style={{ transform: 'scale(1.25)', willChange: 'transform' }}
+                      alt="Portrait"
+                      width="1536"
+                      height="2040"
+                      className="h-full w-full object-cover object-center grayscale"
+                      src="/1.webp"
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Right Column: Available for work & Month */}
+              {/* Right Column */}
               <div className="end-1 col-span-8 flex w-full flex-col items-end justify-end md:col-span-4">
                 <div className="overflow-clip">
-                  <span ref={statusRef} className="block max-w-[15ch] text-right font-mono text-[length:var(--text-base-small)] font-medium uppercase leading-snug tracking-wider text-[var(--color-secondary-100)] md:max-w-max 3xl:text-[length:var(--text-base)]">
+                  <span
+                    ref={statusRef}
+                    className="block max-w-[15ch] text-right font-mono text-[length:var(--text-base-small)] font-medium uppercase leading-snug tracking-wider text-[var(--color-secondary-100)] md:max-w-max 3xl:text-[length:var(--text-base)]"
+                  >
                     Available for work
                   </span>
                 </div>
                 <div className="overflow-clip">
-                  <span ref={dateRef} className="block text-[length:var(--text-heading-2)] font-semibold uppercase leading-none tracking-tight text-[var(--color-secondary-300)] sm:text-[length:var(--text-heading-1--alt)] 3xl:text-[length:var(--text-heading-1)]">
+                  <span
+                    ref={dateRef}
+                    className="block text-[length:var(--text-heading-2)] font-semibold uppercase leading-none tracking-tight text-[var(--color-secondary-300)] sm:text-[length:var(--text-heading-1--alt)] 3xl:text-[length:var(--text-heading-1)]"
+                  >
                     Nov'26
                   </span>
                 </div>
               </div>
 
             </div>
-
           </div>
         </div>
         <div id="hero-spacer" className="h-svh"></div>
