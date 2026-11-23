@@ -176,7 +176,7 @@ export function Services() {
                 (Services)
               </span>
               <p className="w-full max-w-[35ch] text-balance text-[length:var(--text-base-large)] font-medium leading-relaxed text-[var(--color-secondary-50)]">
-                I specialize in building fast, reliable, and user-friendly full-stack web applications. I help small businesses and startups turn ideas into high-quality websites and products that actually work and scale.
+                Full Stack Developer with 1+ years of experience building responsive, high-performance web applications using Java, Spring Boot, and React. I enjoy owning features end-to-end and believe in clean architecture mixed with a bit of vibe coding.
               </p>
             </div>
           </div>

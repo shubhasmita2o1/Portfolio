@@ -12,38 +12,38 @@ personal: {
 },
 
 
-  services: [
-    {
-      index: "01",
-      title: "Full-Stack Development",
-      description: "From frontend interactions to backend APIs, I build complete web solutions. I work with modern stacks to deliver apps that are scalable, maintainable, and ready for real-world users.",
-      features: [
-        "React, Node.js, Express.js",
-        "REST APIs, Firebase, Docker",
-        "Git, GitHub, Postman"
-      ]
-    },
-    {
-      index: "02",
-      title: "UI/UX & Frontend",
-      description: "Good design feels effortless. I design and develop responsive, intuitive interfaces that work smoothly across devices, with a strong focus on clarity, accessibility, and performance.",
-      features: [
-        "NextJs, TailwindCSS, GSAP",
-        "Figma → Pixel-perfect code",
-        "HTML, CSS, JavaScript"
-      ]
-    },
-    {
-      index: "03",
-      title: "Optimization",
-      description: "I focus on building systems that stay reliable as things scale. From handling data efficiently to designing clean architecture, I apply core computer science principles to keep applications fast, stable, and future-ready.",
-      features: [
-        "Data Structures & Algorithms",
-        "DBMS, OOP, OS Fundamentals",
-        "Scalable systems & data pipelines"
-      ]
-    }
-  ],
+services: [
+  {
+    index: "01",
+    title: "Full-Stack Development",
+    description: "I build complete web applications using React + TypeScript on the frontend and Java/Spring Boot or Node.js on the backend. Comfortable owning features end-to-end — from REST API design and database modeling to production-ready UI.",
+    features: [
+      "React, TypeScript, Vite, Tailwind CSS",
+      "Java, Spring Boot, Node.js, REST APIs",
+      "MongoDB, PostgreSQL, MySQL, JWT Auth"
+    ]
+  },
+  {
+    index: "02",
+    title: "Frontend Development",
+    description: "I develop clean, responsive, and accessible interfaces with React, Vite, and Tailwind CSS. Focus on component architecture, translating wireframes into production code, and delivering smooth user experiences.",
+    features: [
+      "React, TypeScript, Vite, Tailwind CSS",
+      "Component Architecture & State Management",
+      "Responsive & Cross-browser UI"
+    ]
+  },
+  {
+    index: "03",
+    title: "Backend & Architecture",
+    description: "I design and implement backend services with Spring Boot and Node.js, applying RBAC, multi-tenancy, and clean layered architecture (Controller–Service–Repository). Focused on scalable and maintainable systems.",
+    features: [
+      "Spring Boot, Spring Security, JWT, RBAC",
+      "Multi-tenancy & Modular Monolith",
+      "REST APIs, Database Design, Git Workflows"
+    ]
+  }
+],
 
   projects: [
     {
