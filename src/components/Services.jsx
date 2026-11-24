@@ -71,17 +71,22 @@ export function Services() {
   // 1) Each card's sticky top sits cleanly below the previous card's header (zero overlap)
   // 2) All 3 cards reach the bottom of their parent at the exact same viewport Y so they lock and exit together
   useEffect(() => {
+    let rafId = null;
+
     const updateStickyLayout = () => {
       const isMobile = window.innerWidth < 768;
       const baseTop = isMobile ? 52 : Math.round(window.innerHeight * 0.18);
 
-      const h1 = (headerRefs.current[0]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
-      const h2 = (headerRefs.current[1]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
-      const h3 = (headerRefs.current[2]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
+      const measureHeight = (el, fallback) =>
+        el ? Math.ceil(el.getBoundingClientRect().height) : fallback;
 
-      const b1 = bodyRefs.current[0]?.offsetHeight || 280;
-      const b2 = bodyRefs.current[1]?.offsetHeight || 280;
-      const b3 = bodyRefs.current[2]?.offsetHeight || 280;
+      const h1 = measureHeight(headerRefs.current[0], isMobile ? 92 : 96) + 1;
+      const h2 = measureHeight(headerRefs.current[1], isMobile ? 92 : 96) + 1;
+      const h3 = measureHeight(headerRefs.current[2], isMobile ? 92 : 96) + 1;
+
+      const b1 = measureHeight(bodyRefs.current[0], 280);
+      const b2 = measureHeight(bodyRefs.current[1], 280);
+      const b3 = measureHeight(bodyRefs.current[2], 280);
 
       const ch1 = h1 + b1;
       const ch2 = h2 + b2;
@@ -90,34 +95,71 @@ export function Services() {
       // Synchronize bottom edge across all 3 cards so Card 3 never climbs over Card 2/1 on scroll exit
       const targetSpanFromT1 = Math.max(ch1, h1 + ch2, h1 + h2 + ch3);
 
-      setStickyLayout({
-        tops: [
-          `${baseTop}px`,
-          `${baseTop + h1}px`,
-          `${baseTop + h1 + h2}px`,
-        ],
-        minHeights: [
-          `${targetSpanFromT1}px`,
-          `${Math.max(ch2, targetSpanFromT1 - h1)}px`,
-          `${Math.max(ch3, targetSpanFromT1 - h1 - h2)}px`,
-        ],
+      const nextTops = [
+        `${baseTop}px`,
+        `${baseTop + h1}px`,
+        `${baseTop + h1 + h2}px`,
+      ];
+      const nextMinHeights = [
+        `${targetSpanFromT1}px`,
+        `${Math.max(ch2, targetSpanFromT1 - h1)}px`,
+        `${Math.max(ch3, targetSpanFromT1 - h1 - h2)}px`,
+      ];
+
+      setStickyLayout((prev) => {
+        if (
+          prev.tops[0] === nextTops[0] &&
+          prev.tops[1] === nextTops[1] &&
+          prev.tops[2] === nextTops[2] &&
+          prev.minHeights[0] === nextMinHeights[0] &&
+          prev.minHeights[1] === nextMinHeights[1] &&
+          prev.minHeights[2] === nextMinHeights[2]
+        ) {
+          return prev;
+        }
+        return { tops: nextTops, minHeights: nextMinHeights };
+      });
+    };
+
+    // Defer via rAF so ResizeObserver never drops notifications when minHeights mutate in the same frame
+    const scheduleUpdate = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        updateStickyLayout();
       });
     };
 
     updateStickyLayout();
 
-    const ro = new ResizeObserver(updateStickyLayout);
-    headerRefs.current.forEach((el) => el && ro.observe(el));
+    const ro = new ResizeObserver(scheduleUpdate);
+    headerRefs.current.forEach((el) => {
+      if (!el) return;
+      ro.observe(el);
+      const headingEl = el.querySelector('h3');
+      if (headingEl) ro.observe(headingEl);
+    });
     bodyRefs.current.forEach((el) => el && ro.observe(el));
-    window.addEventListener('resize', updateStickyLayout);
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(updateStickyLayout);
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('load', scheduleUpdate);
+
+    if (document.fonts) {
+      document.fonts.ready?.then(scheduleUpdate);
+      document.fonts.addEventListener?.('loadingdone', scheduleUpdate);
     }
 
+    const t1 = setTimeout(scheduleUpdate, 250);
+    const t2 = setTimeout(scheduleUpdate, 1000);
+
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      clearTimeout(t1);
+      clearTimeout(t2);
       ro.disconnect();
-      window.removeEventListener('resize', updateStickyLayout);
+      window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener('load', scheduleUpdate);
+      document.fonts?.removeEventListener?.('loadingdone', scheduleUpdate);
     };
   }, [services.length]);
 
