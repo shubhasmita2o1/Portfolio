@@ -5,11 +5,30 @@ import { portfolioData } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const DESKTOP_TOP_CLASSES = [
+  'md:top-[18vh]',
+  'md:top-[calc(18vh+6rem)]',
+  'md:top-[calc(18vh+12rem)]',
+];
+
 const CARD_MARGIN_CLASSES = [
-  'mb-[6em] sm:mb-[8em] md:mb-[10em]',
-  'mb-[6em] sm:mb-[8em] md:mb-[8em]',
+  'mb-[6em] sm:mb-[8em] md:mb-[19em] lg:mb-[20em]',
+  'mb-[6em] sm:mb-[8em] md:mb-[13.5em] lg:mb-[14em]',
   'mb-[8em] sm:mb-[8em] md:mb-[7.5em] lg:mb-[8em]',
 ];
+
+function renderServiceTitle(title) {
+  if (!title) return null;
+  const words = title.trim().split(/\s+/);
+  if (words.length < 2) return title;
+  const lastWord = words.pop();
+  return (
+    <>
+      {words.join(' ')} <br className="block sm:hidden" />
+      {lastWord}
+    </>
+  );
+}
 
 export function Services() {
   const sectionRef = useRef(null);
@@ -18,9 +37,13 @@ export function Services() {
   const headerRefs = useRef([]);
   const bodyRefs = useRef([]);
 
-  const [stickyLayout, setStickyLayout] = useState({
-    tops: ['3.25rem', 'calc(3.25rem + 5.75rem)', 'calc(3.25rem + 11.5rem)'],
-    minHeights: ['auto', 'auto', 'auto'],
+  const [mobileSticky, setMobileSticky] = useState(() => {
+    const isMob = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+    return {
+      isMobile: isMob,
+      tops: ['3.25rem', 'calc(3.25rem + 6.25rem)', 'calc(3.25rem + 12.5rem)'],
+      minHeights: ['auto', 'auto', 'auto'],
+    };
   });
 
   // Real data from portfolioData
@@ -67,32 +90,37 @@ export function Services() {
   // Word-by-word structure matching SelectedWorks for clean masking transition
   const headingWords = ['WHAT', 'I', 'DO', '/'];
 
-  // Dynamically measure actual header + body heights so:
-  // 1) Each card's sticky top sits cleanly below the previous card's header (zero overlap)
-  // 2) All 3 cards reach the bottom of their parent at the exact same viewport Y so they lock and exit together
+  // Mobile-only adaptive sticky layout:
+  // Desktop (>=768px) stays pure CSS (md:top-[18vh], +6rem, +12rem) untouched.
+  // Mobile (<768px) adapts to exact row heights and locks all 3 card bottoms together on exit.
   useEffect(() => {
     let rafId = null;
 
     const updateStickyLayout = () => {
-      const isMobile = window.innerWidth < 768;
-      const baseTop = isMobile ? 52 : Math.round(window.innerHeight * 0.18);
+      const isMob = window.innerWidth < 768;
+      if (!isMob) {
+        setMobileSticky((prev) =>
+          prev.isMobile ? { ...prev, isMobile: false } : prev
+        );
+        return;
+      }
 
+      const baseTop = 52;
       const measureHeight = (el, fallback) =>
         el ? Math.ceil(el.getBoundingClientRect().height) : fallback;
 
-      const h1 = measureHeight(headerRefs.current[0], isMobile ? 92 : 96) + 1;
-      const h2 = measureHeight(headerRefs.current[1], isMobile ? 92 : 96) + 1;
-      const h3 = measureHeight(headerRefs.current[2], isMobile ? 92 : 96) + 1;
+      const h1 = measureHeight(headerRefs.current[0], 98) + 1;
+      const h2 = measureHeight(headerRefs.current[1], 98) + 1;
+      const h3 = measureHeight(headerRefs.current[2], 98) + 1;
 
-      const b1 = measureHeight(bodyRefs.current[0], 280);
-      const b2 = measureHeight(bodyRefs.current[1], 280);
-      const b3 = measureHeight(bodyRefs.current[2], 280);
+      const b1 = measureHeight(bodyRefs.current[0], 290);
+      const b2 = measureHeight(bodyRefs.current[1], 290);
+      const b3 = measureHeight(bodyRefs.current[2], 290);
 
       const ch1 = h1 + b1;
       const ch2 = h2 + b2;
       const ch3 = h3 + b3;
 
-      // Synchronize bottom edge across all 3 cards so Card 3 never climbs over Card 2/1 on scroll exit
       const targetSpanFromT1 = Math.max(ch1, h1 + ch2, h1 + h2 + ch3);
 
       const nextTops = [
@@ -106,8 +134,9 @@ export function Services() {
         `${Math.max(ch3, targetSpanFromT1 - h1 - h2)}px`,
       ];
 
-      setStickyLayout((prev) => {
+      setMobileSticky((prev) => {
         if (
+          prev.isMobile &&
           prev.tops[0] === nextTops[0] &&
           prev.tops[1] === nextTops[1] &&
           prev.tops[2] === nextTops[2] &&
@@ -117,11 +146,10 @@ export function Services() {
         ) {
           return prev;
         }
-        return { tops: nextTops, minHeights: nextMinHeights };
+        return { isMobile: true, tops: nextTops, minHeights: nextMinHeights };
       });
     };
 
-    // Defer via rAF so ResizeObserver never drops notifications when minHeights mutate in the same frame
     const scheduleUpdate = () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
@@ -270,38 +298,35 @@ export function Services() {
         </div>
       </div>
 
-      {/* Sticky cards container with dynamically synchronized stacking & exit */}
+      {/* Sticky cards container: mobile adaptive stacking + pure CSS desktop stacking */}
       <div className="w-full pt-[var(--space-lg)]">
         <div className="mt-8 sm:mt-12 flex flex-col bg-[var(--color-secondary-400)]">
           {services.slice(0, 3).map((service, idx) => (
             <div
               key={service.index || idx}
-              className={`sticky border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] ${CARD_MARGIN_CLASSES[idx]}`}
-              style={{
-                zIndex: idx + 1,
-                top: stickyLayout.tops[idx],
-                minHeight: stickyLayout.minHeights[idx],
-              }}
+              className={`sticky border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] ${DESKTOP_TOP_CLASSES[idx]} ${CARD_MARGIN_CLASSES[idx]}`}
+              style={
+                mobileSticky.isMobile
+                  ? {
+                      zIndex: idx + 1,
+                      top: mobileSticky.tops[idx],
+                      minHeight: mobileSticky.minHeights[idx],
+                    }
+                  : { zIndex: idx + 1 }
+              }
             >
               {/* Header row: fixed number column + generous gap + flexible title column */}
               <div
                 ref={(el) => {
                   headerRefs.current[idx] = el;
                 }}
-                className="grid grid-cols-[4.25rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-3.5 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
+                className="grid grid-cols-[4.25rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-3.5 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3.5 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
               >
                 <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
                   ({service.index || `0${idx + 1}`})
                 </span>
                 <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.06] md:leading-snug">
-                  {idx === 0 && service.title?.toLowerCase().includes('full-stack') ? (
-                    <>
-                      Full-Stack <br className="block sm:hidden" />
-                      Development
-                    </>
-                  ) : (
-                    service.title
-                  )}
+                  {renderServiceTitle(service.title)}
                 </h3>
               </div>
 
@@ -310,22 +335,22 @@ export function Services() {
                 ref={(el) => {
                   bodyRefs.current[idx] = el;
                 }}
-                className="relative flex flex-col place-items-start pt-4 sm:pt-6 md:pt-[var(--space-3xs)] pb-4 sm:pb-6 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12"
+                className="relative flex flex-col place-items-start pt-4 sm:pt-6 md:pt-[var(--space-3xs)] pb-4 sm:pb-6 md:pb-0 md:grid md:min-h-[40vh] md:grid-cols-12"
               >
                 <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-4 sm:gap-y-6 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
-                  <p className="w-full max-w-[42ch] text-[15px] sm:text-[length:var(--text-base)] md:text-[17px] font-medium leading-[1.45] sm:leading-relaxed text-[var(--color-secondary-50)]">
+                  <p className="w-full max-w-[40ch] text-[15px] sm:text-[length:var(--text-base)] font-medium leading-[1.45] sm:leading-snug text-[var(--color-secondary-50)]">
                     {service.description}
                   </p>
-                  <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] pt-1 sm:pt-3">
+                  <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] md:divide-[var(--color-secondary-200)] pt-1 sm:pt-2">
                     {service.features?.map((feat, fIdx) => (
                       <div
                         key={fIdx}
-                        className="flex items-baseline gap-x-4 sm:gap-x-6 py-2.5 sm:py-3.5 md:py-2.5"
+                        className="flex items-baseline gap-x-4 sm:gap-x-[var(--space-sm)] py-2.5 sm:py-3 md:py-1.5 xl:gap-x-[var(--space-md)]"
                       >
-                        <span className="font-mono text-xs sm:text-base font-medium leading-none text-[var(--color-secondary-75)] select-none mr-1 sm:mr-3">
+                        <span className="font-mono text-xs sm:text-[length:var(--text-base)] font-medium leading-none text-[var(--color-secondary-75)] select-none mr-1 sm:mr-4">
                           0{fIdx + 1}
                         </span>
-                        <span className="font-bold text-[var(--color-accent-400)] sm:text-[var(--color-accent-500)] text-[17px] sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
+                        <span className="font-bold text-[var(--color-accent-400)] md:text-[var(--color-accent-500)] text-[17px] sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
                           {feat}
                         </span>
                       </div>
