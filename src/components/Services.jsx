@@ -165,7 +165,7 @@ export function Services() {
     <section
       id="Services"
       ref={sectionRef}
-      className="section-padding pb-6 sm:pb-8 md:pb-[var(--space-xl)] rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
+      className="section-padding rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
     >
       {/* Title + intro: stacked rows with letter masking reveal */}
       <div className="relative flex w-full flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
@@ -214,7 +214,7 @@ export function Services() {
         <div className="mt-8 sm:mt-12 flex flex-col bg-[var(--color-secondary-400)]">
           {/* ==================== Service 01 ==================== */}
           <div
-            className="sticky z-[1] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[21.5em] sm:mb-[19em] md:mb-[19em] lg:mb-[20em]"
+            className="sticky z-[1] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[22em] sm:mb-[20em] md:mb-[19em] lg:mb-[20em]"
             style={{ top: stickyOffsets.card1Top }}
           >
             {/* Header row: fixed number column + generous gap + flexible title column */}
@@ -263,7 +263,7 @@ export function Services() {
 
           {/* ==================== Service 02 ==================== */}
           <div
-            className="sticky z-[2] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[15.5em] sm:mb-[13em] md:mb-[13.5em] lg:mb-[14em]"
+            className="sticky z-[2] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[18em] sm:mb-[16em] md:mb-[13.5em] lg:mb-[14em]"
             style={{ top: stickyOffsets.card2Top }}
           >
             {/* Header row */}
@@ -306,7 +306,7 @@ export function Services() {
 
           {/* ==================== Service 03 ==================== */}
           <div
-            className="sticky z-[3] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-0 sm:mb-2 md:mb-4"
+            className="sticky z-[3] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[14em] sm:mb-[12em] md:mb-[7.5em] lg:mb-[8em]"
             style={{ top: stickyOffsets.card3Top }}
           >
             {/* Header row */}
@@ -320,7 +320,7 @@ export function Services() {
             </div>
 
             {/* Service 03 Body */}
-            <div className="relative flex flex-col place-items-start pt-6 sm:pt-8 md:pt-[var(--space-3xs)] pb-6 md:pb-8 md:grid md:min-h-[38vh] md:grid-cols-12">
+            <div className="relative flex flex-col place-items-start pt-6 sm:pt-8 md:pt-[var(--space-3xs)] pb-10 sm:pb-12 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12">
               <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-6 sm:gap-y-8 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
                 <p className="w-full max-w-[42ch] text-[length:var(--text-base)] md:text-[17px] font-medium leading-relaxed sm:leading-relaxed text-[var(--color-secondary-50)]">
                   {services[2]?.description}
