@@ -196,6 +196,7 @@ export function SelectedWorks() {
               </span>
               <div className="w-full max-w-[28ch] text-balance font-medium leading-relaxed text-[var(--color-secondary-50)] text-[length:var(--text-base-large)]">
                 Thoughtfully crafted digital experiences that blend utility and aesthetics into something functional, memorable, and refined.
+
               </div>
             </div>
           </div>

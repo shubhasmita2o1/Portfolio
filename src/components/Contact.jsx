@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MagneticButton } from './MagneticButton';
 
 export function Contact() {
   const [status, setStatus] = useState('idle'); // 'idle' | 'sending' | 'success'
@@ -15,7 +16,7 @@ export function Contact() {
   };
 
   return (
-    <div className="section-padding-x py-[var(--space-lg)] bg-[#E8E8E3]">
+    <section id="Contact" className="section-padding-x py-[var(--space-lg)] bg-[#E8E8E3] relative z-30">
       <div className="relative flex h-full w-full flex-col items-center justify-between rounded-2xl md:rounded-3xl bg-[linear-gradient(0deg,_#393632,_#080807)] bg-cover border border-white/10 shadow-xl backdrop-blur-xl p-[var(--space-md)] md:p-[var(--space-xl)] pt-16 md:pt-24 pb-16 md:pb-24">
         {/* Massive Bold Centered Heading: LET'S MAKE IT HAPPEN */}
         <h2 className="max-w-[10ch] text-center text-[length:var(--text-heading-1)] font-semibold uppercase text-[var(--color-accent-400)] leading-none tracking-tight font-editorial mb-8 md:mb-12">
@@ -23,8 +24,7 @@ export function Contact() {
         </h2>
 
         {/* Floating Glassmorphic Contact Card */}
-        <section
-          id="Contact"
+        <div
           className="sm:w-[36rem] w-full mx-auto my-4 px-6 sm:px-10 xl:px-14 py-12 rounded-2xl backdrop-blur-xl bg-[rgba(209,209,199,0.05)] border border-[rgba(255,255,255,0.1)] shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
         >
           <h2 className="text-center text-[length:var(--text-h4)] font-medium mb-8 text-[var(--color-accent-200)] tracking-tight font-editorial">
@@ -62,13 +62,15 @@ export function Contact() {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full px-6 py-3.5 rounded-xl font-semibold tracking-wide text-[length:var(--text-base-small)] transition-all duration-100 bg-[var(--color-accent-200)] text-black hover:bg-white active:scale-[0.98] active:shadow-inner cursor-pointer font-editorial"
-            >
-              {status === 'sending' ? 'Sending...' : status === 'success' ? 'Message Sent! ✓' : 'Get a quote'}
-            </button>
+            <MagneticButton strength={0.25} className="w-full">
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="w-full px-6 py-3.5 rounded-xl font-semibold tracking-wide text-[length:var(--text-base-small)] transition-all duration-100 bg-[var(--color-accent-200)] text-black hover:bg-white active:scale-[0.98] active:shadow-inner cursor-pointer font-editorial"
+              >
+                {status === 'sending' ? 'Sending...' : status === 'success' ? 'Message Sent! ✓' : 'Get a quote'}
+              </button>
+            </MagneticButton>
           </form>
 
           {status === 'success' && (
@@ -76,8 +78,8 @@ export function Contact() {
               Thank you! Your inquiry has been sent successfully.
             </div>
           )}
-        </section>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

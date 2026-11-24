@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { MagneticButton } from './MagneticButton';
 
 export function Footer() {
   const [timeStr, setTimeStr] = useState('');
@@ -199,18 +200,20 @@ export function Footer() {
           {/* Circular Scroll To Top Button (col-3) */}
           <div className="hidden h-fit w-full justify-end md:col-span-3 md:flex">
             <div className="w-fit">
-              <button
-                onClick={scrollToTop}
-                aria-label="Scroll to top"
-                className="group relative hidden w-fit flex-col items-center justify-center overflow-hidden rounded-full bg-[var(--color-accent-500)] p-[var(--space-lg)] duration-1000 ease-expo hover:scale-90 md:flex cursor-pointer shadow-sm"
-              >
-                <span className="absolute flex transition-all duration-500 ease-in-out-cubic group-hover:-translate-y-20">
-                  <img alt="Scroll to top arrow" width="26" height="28" src="/arrow.svg" />
-                </span>
-                <span className="absolute flex translate-y-20 transition-all duration-500 ease-in-out-cubic group-hover:translate-y-0">
-                  <img alt="Scroll to top arrow" width="26" height="28" src="/arrow.svg" />
-                </span>
-              </button>
+              <MagneticButton strength={0.45}>
+                <button
+                  onClick={scrollToTop}
+                  aria-label="Scroll to top"
+                  className="group relative hidden w-fit flex-col items-center justify-center overflow-hidden rounded-full bg-[var(--color-accent-500)] p-[var(--space-lg)] duration-1000 ease-expo hover:scale-90 md:flex cursor-pointer shadow-sm"
+                >
+                  <span className="absolute flex transition-all duration-500 ease-in-out-cubic group-hover:-translate-y-20">
+                    <img alt="Scroll to top arrow" width="26" height="28" src="/arrow.svg" />
+                  </span>
+                  <span className="absolute flex translate-y-20 transition-all duration-500 ease-in-out-cubic group-hover:translate-y-0">
+                    <img alt="Scroll to top arrow" width="26" height="28" src="/arrow.svg" />
+                  </span>
+                </button>
+              </MagneticButton>
             </div>
           </div>
         </div>

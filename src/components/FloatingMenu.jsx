@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MagneticButton } from './MagneticButton';
 import { portfolioData } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -61,20 +62,26 @@ export function FloatingMenu() {
   return (
     <>
       {/* Floating Toggle Button (Hidden on Hero, appears from Services onwards) */}
-      <button
+      <div
         ref={buttonRef}
-        id="menu-toggle-btn"
-        onClick={toggle}
-        className={`fixed top-8 right-8 z-[99999999] p-3 bg-[#E8E8E3] rounded-full shadow-lg cursor-pointer hover:bg-white transition-all transform hover:scale-105 opacity-0 pointer-events-none ${
-          isOpen ? 'menu-btn-active' : ''
-        }`}
-        aria-label="Toggle navigation menu"
+        className="fixed top-8 right-8 z-[99999999] opacity-0 pointer-events-none"
       >
-        <svg width="35" height="35" viewBox="0 0 35 35">
-          <line id="menu-line-1" x1="2" y1="13.5" x2="33" y2="13.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
-          <line id="menu-line-2" x1="2" y1="21.5" x2="33" y2="21.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </button>
+        <MagneticButton strength={0.45}>
+          <button
+            id="menu-toggle-btn"
+            onClick={toggle}
+            className={`p-3 bg-[#E8E8E3] rounded-full shadow-lg cursor-pointer hover:bg-white transition-all transform hover:scale-105 ${
+              isOpen ? 'menu-btn-active' : ''
+            }`}
+            aria-label="Toggle navigation menu"
+          >
+            <svg width="35" height="35" viewBox="0 0 35 35">
+              <line id="menu-line-1" x1="2" y1="13.5" x2="33" y2="13.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
+              <line id="menu-line-2" x1="2" y1="21.5" x2="33" y2="21.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </MagneticButton>
+      </div>
 
       {/* Fullscreen Drawer Overlay */}
       <div

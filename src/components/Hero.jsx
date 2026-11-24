@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MagneticButton } from './MagneticButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
+  const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const svgRef = useRef(null);
   const mobileWordsRef = useRef(null);
@@ -159,33 +161,48 @@ export function Hero() {
       window.addEventListener('hero-enter', playEntrance);
       const fallbackTimer = setTimeout(playEntrance, 1200);
 
-      // Parallax on scroll
-      gsap.to(containerRef.current, {
-        scale: 0.94,
-        opacity: 0.85,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '#hero-spacer',
+      // Sticky Pin and Parallax Scale + Fade on scroll as Services slides up
+      const heroSection = sectionRef.current;
+      const heroContainer = containerRef.current;
+      const servicesSection = document.getElementById('Services');
+
+      if (heroSection && heroContainer) {
+        ScrollTrigger.create({
+          trigger: heroSection,
           start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        }
-      });
+          endTrigger: servicesSection || '#Services',
+          end: 'top top',
+          pin: true,
+          pinSpacing: false,
+        });
+
+        gsap.to(heroContainer, {
+          scale: 0.94,
+          opacity: 0.35,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: servicesSection || '#Services',
+            start: 'top bottom',
+            end: 'top top',
+            scrub: true,
+          },
+        });
+      }
 
       return () => {
         window.removeEventListener('hero-enter', playEntrance);
         window.removeEventListener('resize', updateLetterSpacing);
         clearTimeout(fallbackTimer);
       };
-    }, containerRef);
+    }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
     <>
-      <section className="mb-[-100svh] py-0" id="Home">
-        <div ref={containerRef} className="section-padding-equal sticky top-0 flex h-svh items-end bg-[#E8E8E3]">
+      <section ref={sectionRef} className="relative h-svh w-full py-0 z-10" id="Home">
+        <div ref={containerRef} className="section-padding-equal flex h-svh w-full items-end bg-[#E8E8E3] will-change-transform">
           <div className="relative flex w-full flex-col md:gap-y-[var(--space-lg)]">
             
             {/* ========== NAME BANNER ========== */}
@@ -272,20 +289,22 @@ export function Hero() {
 
                     <div className="overflow-clip">
                       <div ref={ctaRef}>
-                        <a href="#Contact">
-                          <button className="group pointer-events-auto relative flex h-fit w-fit items-center justify-center overflow-hidden rounded-full bg-[var(--color-secondary-300)] px-[var(--space-md)] sm:py-[var(--space-sm)] py-[var(--space-xs)] font-bold uppercase tracking-wide text-[#f1f0ed] sm:text-[length:var(--text-base)] text-[length:var(--text-base-small)]">
-                            <span className="absolute inset-0 z-10 block overflow-hidden">
-                              <span className="block h-full w-full translate-y-full rounded-t-[15rem] bg-[var(--color-accent-600)] transition-all duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] sm:group-hover:translate-y-0 sm:group-hover:rounded-none"></span>
-                            </span>
-                            <span className="relative z-20 block overflow-hidden transition-all">
-                              <span className="block after:absolute after:left-0 after:block after:translate-y-0 after:transition-all after:duration-500 after:ease-[cubic-bezier(0.77,0,0.175,1)] after:content-[attr(data-after)] sm:group-hover:after:-translate-y-full" data-after="CONTACT ↗">
-                                <span className="flex transition-all duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] sm:group-hover:-translate-y-full">
-                                  CONTACT ↗
+                        <MagneticButton strength={0.4}>
+                          <a href="#Contact">
+                            <button className="group pointer-events-auto relative flex h-fit w-fit items-center justify-center overflow-hidden rounded-full bg-[var(--color-secondary-300)] px-[var(--space-md)] sm:py-[var(--space-sm)] py-[var(--space-xs)] font-bold uppercase tracking-wide text-[#f1f0ed] sm:text-[length:var(--text-base)] text-[length:var(--text-base-small)]">
+                              <span className="absolute inset-0 z-10 block overflow-hidden">
+                                <span className="block h-full w-full translate-y-full rounded-t-[15rem] bg-[var(--color-accent-600)] transition-all duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] sm:group-hover:translate-y-0 sm:group-hover:rounded-none"></span>
+                              </span>
+                              <span className="relative z-20 block overflow-hidden transition-all">
+                                <span className="block after:absolute after:left-0 after:block after:translate-y-0 after:transition-all after:duration-500 after:ease-[cubic-bezier(0.77,0,0.175,1)] after:content-[attr(data-after)] sm:group-hover:after:-translate-y-full" data-after="CONTACT ↗">
+                                  <span className="flex transition-all duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] sm:group-hover:-translate-y-full">
+                                    CONTACT ↗
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                          </button>
-                        </a>
+                            </button>
+                          </a>
+                        </MagneticButton>
                       </div>
                     </div>
                   </div>
@@ -336,7 +355,6 @@ export function Hero() {
             </div>
           </div>
         </div>
-        <div id="hero-spacer" className="h-svh"></div>
       </section>
     </>
   );

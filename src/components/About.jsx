@@ -9,6 +9,7 @@ const TITLE_LINES = ['DEVELOPER', 'DESIGNER', 'CREATOR/'];
 
 export function About() {
   const sectionRef = useRef(null);
+  const cardRef = useRef(null);
   const titleRef = useRef(null);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export function About() {
     let ctx;
     const rafId = requestAnimationFrame(() => {
       ctx = gsap.context(() => {
+        // 1. Masked line reveal for DEVELOPER / DESIGNER / CREATOR/
         const letterEls = titleRef.current?.querySelectorAll('.letter');
         if (letterEls?.length) {
           gsap.fromTo(
@@ -40,6 +42,22 @@ export function About() {
             }
           );
         }
+
+        // 2. Scale Down + Slide Up (Section Shrink on Exit) as user scrolls into Contact
+        if (cardRef.current) {
+          gsap.to(cardRef.current, {
+            scale: 0.93,
+            yPercent: -4,
+            transformOrigin: 'bottom center',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#Contact',
+              start: 'top bottom',
+              end: 'top 20%',
+              scrub: true,
+            },
+          });
+        }
       });
       ScrollTrigger.refresh();
     });
@@ -53,13 +71,16 @@ export function About() {
   return (
     <section id="About" ref={sectionRef} className="mt-[-2vh] relative z-20">
       <div className="relative">
-        <div className="section-padding sm:pb-[10em] pb-[5em] flex flex-col gap-y-[var(--space-lg)] rounded-b-3xl bg-[var(--color-secondary-400)] lg:gap-y-[var(--space-2xl)] md:pt-[15vh]">
+        <div
+          ref={cardRef}
+          className="section-padding sm:pb-[10em] pb-[5em] flex flex-col gap-y-[var(--space-lg)] rounded-b-3xl bg-[var(--color-secondary-400)] lg:gap-y-[var(--space-2xl)] md:pt-[15vh] will-change-transform"
+        >
           
-          {/* Top Custom Grid: DEVELOPER / DESIGNER / CREATOR/ + Skills */}
+          {/* Top: DEVELOPER / DESIGNER / CREATOR/ + Skills */}
           <div className="custom-grid">
             <h2
               ref={titleRef}
-              className="section-heading cs5:text-[length:var(--text-h1-display)] text-[length:var(--text-menu)] relative z-30 flex w-full flex-col col-span-full leading-none text-[var(--color-accent-400)] mix-blend-exclusion lg:col-span-6 mb-8 lg:mb-0 order-1 font-bold"
+              className="section-heading text-[length:var(--text-h1-display)] relative z-30 flex w-full flex-col col-span-full leading-none text-[var(--color-accent-400)] mix-blend-exclusion md:col-span-6 lg:col-span-6 mb-8 md:mb-0 order-1 font-bold"
             >
               {TITLE_LINES.map((line, lineIdx) => (
                 <div key={lineIdx} className="overflow-hidden py-[0.08em] -my-[0.08em]">
@@ -79,12 +100,12 @@ export function About() {
                 </div>
               ))}
             </h2>
-            <div className="relative z-0 lg:col-span-6 col-span-full flex w-full items-start order-2">
+            <div className="relative z-0 col-span-full md:col-span-6 lg:col-span-6 flex w-full items-start order-2">
               <Skills />
             </div>
           </div>
 
-          {/* Bottom Custom Grid: Image 1.webp + About Me narrative */}
+          {/* Bottom: Image + About Me */}
           <div className="custom-grid col-span-full gap-y-[var(--space-lg)] lg:gap-y-[var(--space-2xl)]">
             <div className="pointer-events-none max-h-[30rem] relative z-0 col-span-3 flex aspect-square w-full items-center overflow-clip rounded-md sm:aspect-auto md:items-end">
               <img
@@ -95,22 +116,27 @@ export function About() {
                 src="/1.webp"
               />
             </div>
+
             <div className="col-span-7 col-start-6 flex flex-col gap-y-[var(--space-xl)] lg:gap-y-[var(--space-2xl)]">
+              {/* Main Heading */}
               <div className="relative w-full max-w-[39ch] text-balance text-[length:var(--text-heading-4)] font-medium leading-snug text-[var(--color-accent-400)]">
-                I'm a software engineer driven by a passion for turning ideas into clean, intuitive digital experiences.
+                I build clean, scalable web applications that feel effortless to use.
               </div>
+
+              {/* About Me Content */}
               <div className="flex flex-col gap-x-[var(--space-xl)] gap-y-[var(--space-sm)] lg:flex-row">
                 <span className="flex h-fit overflow-clip font-mono tracking-[var(--tracking-mono)]">
                   <span className="flex h-full font-medium uppercase text-nowrap text-[var(--color-secondary-50)]">
                     (About Me)
                   </span>
                 </span>
+
                 <div className="flex w-full gap-y-4 max-w-[38ch] flex-col text-balance text-[length:var(--text-base)] font-medium leading-base text-[var(--color-secondary-50)]">
                   <p>
-                    I’m a full-stack developer who builds fast, modern web applications mostly with Next.js and Tailwind CSS because they just work. I work with businesses and startups to turn ideas into reliable, user-friendly products built to scale.
+                    I’m a full-stack developer who enjoys turning ideas into reliable products. From designing APIs and database architecture to crafting responsive interfaces, I take ownership of the entire process.
                   </p>
                   <p>
-                    I've been building websites long enough to have strong opinions about things that don't matter to most people, like whether a transition should be 150ms or 200ms. (It's 150ms, btw). Build the thing, make it work, make it feel good. That's the gig.
+                    I’ve worked on multi-tenant platforms, role-based systems, and production websites for clients. My focus is always on writing clean code, creating smooth experiences, and building things that actually last.
                   </p>
                 </div>
               </div>
