@@ -5,26 +5,34 @@ import { portfolioData } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Desktop sticky positions — preserved
 const DESKTOP_TOP_CLASSES = [
   'md:top-[18vh]',
   'md:top-[calc(18vh+6rem)]',
   'md:top-[calc(18vh+12rem)]',
 ];
 
+// Mobile scroll buffers + preserved desktop card spacing
 const CARD_MARGIN_CLASSES = [
-  'mb-[6em] sm:mb-[8em] md:mb-[19em] lg:mb-[20em]',
-  'mb-[6em] sm:mb-[8em] md:mb-[13.5em] lg:mb-[14em]',
-  'mb-[8em] sm:mb-[8em] md:mb-[7.5em] lg:mb-[8em]',
+  'mb-[3em] sm:mb-[4em] md:mb-[19em] lg:mb-[20em]',
+  'mb-[3em] sm:mb-[4em] md:mb-[13.5em] lg:mb-[14em]',
+  'mb-[2em] sm:mb-[2.5em] md:mb-[7.5em] lg:mb-[8em]',
 ];
 
+// Mobile title wrapping
 function renderServiceTitle(title) {
   if (!title) return null;
+
   const words = title.trim().split(/\s+/);
+
   if (words.length < 2) return title;
+
   const lastWord = words.pop();
+
   return (
     <>
-      {words.join(' ')} <br className="block sm:hidden" />
+      {words.join(' ')}{' '}
+      <br className="block sm:hidden" />
       {lastWord}
     </>
   );
@@ -41,62 +49,27 @@ export function Services() {
     const isMob = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
     return {
       isMobile: isMob,
-      tops: ['3.25rem', 'calc(3.25rem + 6.25rem)', 'calc(3.25rem + 12.5rem)'],
+      tops: ['2.75rem', 'calc(2.75rem + 6.75rem)', 'calc(2.75rem + 13.5rem)'],
       minHeights: ['auto', 'auto', 'auto'],
     };
   });
 
-  // Real data from portfolioData
-  const services = portfolioData.services || [
-    {
-      index: '01',
-      title: 'Full-Stack Development',
-      description:
-        'I build complete web applications using React + TypeScript on the frontend and Java/Spring Boot or Node.js on the backend. Comfortable owning features end-to-end — from REST API design and database modeling to production-ready UI.',
-      features: [
-        'React, TypeScript, Vite, Tailwind CSS',
-        'Java, Spring Boot, Node.js, REST APIs',
-        'MongoDB, PostgreSQL, MySQL, JWT Auth',
-      ],
-    },
-    {
-      index: '02',
-      title: 'Frontend Development',
-      description:
-        'I develop clean, responsive, and accessible interfaces with React, Vite, and Tailwind CSS. Focus on component architecture, translating wireframes into production code, and delivering smooth user experiences.',
-      features: [
-        'React, TypeScript, Vite, Tailwind CSS',
-        'Component Architecture & State Management',
-        'Responsive & Cross-browser UI',
-      ],
-    },
-    {
-      index: '03',
-      title: 'Backend & Architecture',
-      description:
-        'I design and implement backend services with Spring Boot and Node.js, applying RBAC, multi-tenancy, and clean layered architecture (Controller–Service–Repository). Focused on scalable and maintainable systems.',
-      features: [
-        'Spring Boot, Spring Security, JWT, RBAC',
-        'Multi-tenancy & Modular Monolith',
-        'REST APIs, Database Design, Git Workflows',
-      ],
-    },
-  ];
+  // Content from portfolioData
+  const services = portfolioData.services || [];
 
   const servicesIntro =
     portfolioData.servicesIntro ||
     'I specialize in building fast, reliable, and user-friendly full-stack web applications. I help small businesses and startups turn ideas into high-quality websites and products that actually work and scale.';
 
-  // Word-by-word structure matching SelectedWorks for clean masking transition
   const headingWords = ['WHAT', 'I', 'DO', '/'];
 
-  // Mobile-only adaptive sticky layout:
-  // Desktop (>=768px) stays pure CSS (md:top-[18vh], +6rem, +12rem) untouched.
-  // Mobile (<768px) adapts to exact row heights and locks all 3 card bottoms together on exit.
+  // Mobile-only adaptive sticky stacking:
+  // Desktop (>= 768px) stays 100% pure CSS with zero inline overrides.
+  // Mobile (< 768px) stacks all 3 cards cleanly using measured row dimensions and exits locked together.
   useEffect(() => {
     let rafId = null;
 
-    const updateStickyLayout = () => {
+    const updateMobileSticky = () => {
       const isMob = window.innerWidth < 768;
       if (!isMob) {
         setMobileSticky((prev) =>
@@ -105,17 +78,17 @@ export function Services() {
         return;
       }
 
-      const baseTop = 52;
+      const baseTop = 44;
       const measureHeight = (el, fallback) =>
         el ? Math.ceil(el.getBoundingClientRect().height) : fallback;
 
-      const h1 = measureHeight(headerRefs.current[0], 98) + 1;
-      const h2 = measureHeight(headerRefs.current[1], 98) + 1;
-      const h3 = measureHeight(headerRefs.current[2], 98) + 1;
+      const h1 = measureHeight(headerRefs.current[0], 108) + 1;
+      const h2 = measureHeight(headerRefs.current[1], 108) + 1;
+      const h3 = measureHeight(headerRefs.current[2], 108) + 1;
 
-      const b1 = measureHeight(bodyRefs.current[0], 290);
-      const b2 = measureHeight(bodyRefs.current[1], 290);
-      const b3 = measureHeight(bodyRefs.current[2], 290);
+      const b1 = measureHeight(bodyRefs.current[0], 360);
+      const b2 = measureHeight(bodyRefs.current[1], 360);
+      const b3 = measureHeight(bodyRefs.current[2], 360);
 
       const ch1 = h1 + b1;
       const ch2 = h2 + b2;
@@ -154,11 +127,11 @@ export function Services() {
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        updateStickyLayout();
+        updateMobileSticky();
       });
     };
 
-    updateStickyLayout();
+    updateMobileSticky();
 
     const ro = new ResizeObserver(scheduleUpdate);
     headerRefs.current.forEach((el) => {
@@ -191,17 +164,22 @@ export function Services() {
     };
   }, [services.length]);
 
-  // Masked letter reveal transition matching SelectedWorks & About
+  // Heading and intro animations
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
+
     if (prefersReducedMotion) return;
 
     let ctx;
+
     const rafId = requestAnimationFrame(() => {
       ctx = gsap.context(() => {
-        const letterEls = headingRef.current?.querySelectorAll('.letter');
+        // Heading letter reveal
+        const letterEls =
+          headingRef.current?.querySelectorAll('.letter');
+
         if (letterEls?.length) {
           gsap.fromTo(
             letterEls,
@@ -214,7 +192,10 @@ export function Services() {
               ease: 'power3.out',
               scrollTrigger: {
                 trigger: headingRef.current || sectionRef.current,
-                start: window.innerWidth < 768 ? 'top 75%' : 'top 85%',
+                start:
+                  window.innerWidth < 768
+                    ? 'top 75%'
+                    : 'top 85%',
                 toggleActions: 'play none none none',
                 once: true,
               },
@@ -222,6 +203,7 @@ export function Services() {
           );
         }
 
+        // Intro reveal
         if (introRef.current) {
           gsap.fromTo(
             introRef.current,
@@ -234,7 +216,10 @@ export function Services() {
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: headingRef.current || sectionRef.current,
-                start: window.innerWidth < 768 ? 'top 75%' : 'top 85%',
+                start:
+                  window.innerWidth < 768
+                    ? 'top 75%'
+                    : 'top 85%',
                 toggleActions: 'play none none none',
                 once: true,
               },
@@ -254,10 +239,11 @@ export function Services() {
     <section
       id="Services"
       ref={sectionRef}
-      className="section-padding pb-8 md:pb-[var(--space-2xl)] rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
+      className="section-padding-x pt-[var(--space-2xl)] pb-2 md:pb-[var(--space-2xl)] rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
     >
-      {/* Title + intro: stacked rows with letter masking reveal */}
+      {/* SECTION HEADING + INTRO */}
       <div className="relative flex w-full flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
+
         <h2 className="section-heading relative leading-[1.02] text-[var(--color-accent-400)] text-[length:var(--text-h1-alt)] md:text-[length:var(--text-h1)]">
           <div className="overflow-hidden py-[0.08em] -my-[0.08em]">
             <span
@@ -288,20 +274,26 @@ export function Services() {
           className="flex grid-cols-12 gap-x-[var(--gap-fluid)] md:grid"
         >
           <div className="col-span-7 flex flex-col gap-x-[var(--space-xl)] gap-y-[var(--space-2xs)] sm:flex-row md:col-start-6">
+
             <span className="flex h-full font-medium uppercase text-nowrap text-[var(--color-secondary-75)] text-[16px] select-none">
               (Services)
             </span>
+
             <p className="w-full max-w-[35ch] text-balance text-[length:var(--text-base-large)] font-medium leading-relaxed text-[var(--color-secondary-50)]">
               {servicesIntro}
             </p>
+
           </div>
         </div>
       </div>
 
-      {/* Sticky cards container: mobile adaptive stacking + pure CSS desktop stacking */}
+      {/* SERVICES */}
       <div className="w-full pt-[var(--space-lg)]">
+
         <div className="mt-8 sm:mt-12 flex flex-col bg-[var(--color-secondary-400)]">
+
           {services.slice(0, 3).map((service, idx) => (
+
             <div
               key={service.index || idx}
               className={`sticky border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] ${DESKTOP_TOP_CLASSES[idx]} ${CARD_MARGIN_CLASSES[idx]}`}
@@ -315,53 +307,146 @@ export function Services() {
                   : { zIndex: idx + 1 }
               }
             >
-              {/* Header row: fixed number column + generous gap + flexible title column */}
+
+              {/* SERVICE HEADER */}
+
               <div
                 ref={(el) => {
                   headerRefs.current[idx] = el;
                 }}
-                className="grid grid-cols-[4.25rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-3.5 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3.5 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
+                className="
+                  grid
+                  grid-cols-[4.25rem_minmax(0,1fr)]
+                  sm:grid-cols-[5.5rem_minmax(0,1fr)]
+                  gap-x-4
+                  sm:gap-x-6
+                  md:grid-cols-12
+                  md:gap-x-[var(--gap-fluid)]
+                  items-start
+                  md:items-center
+                  text-left
+                  text-[clamp(2rem,8vw,2.6rem)]
+                  md:text-[length:var(--text-heading-2)]
+                  font-semibold
+                  text-[var(--color-accent-400)]
+                  md:justify-between
+                  py-5
+                  sm:py-6
+                  md:py-[var(--space-md)]
+                  2xl:py-[var(--space-sm)]
+                "
               >
-                <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
+
+                {/* NUMBER */}
+
+                <span
+                  className="
+                    col-span-1
+                    md:col-span-2
+                    select-none
+                    tracking-tight
+                    tabular-nums
+                    leading-[1.06]
+                    whitespace-nowrap
+                  "
+                >
                   ({service.index || `0${idx + 1}`})
                 </span>
-                <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.06] md:leading-snug">
+
+                {/* TITLE */}
+
+                <h3
+                  className="
+                    min-w-0
+                    col-span-1
+                    md:col-span-8
+                    md:col-start-6
+                    tracking-tight
+                    leading-[1.06]
+                    md:leading-snug
+                    break-words
+                  "
+                >
                   {renderServiceTitle(service.title)}
                 </h3>
+
               </div>
 
-              {/* Service Body: description + feature list */}
+              {/* SERVICE BODY */}
+
               <div
                 ref={(el) => {
                   bodyRefs.current[idx] = el;
                 }}
-                className="relative flex flex-col place-items-start pt-4 sm:pt-6 md:pt-[var(--space-3xs)] pb-4 sm:pb-6 md:pb-0 md:grid md:min-h-[40vh] md:grid-cols-12"
+                className={`
+                  relative
+                  flex
+                  flex-col
+                  place-items-start
+                  pt-8
+                  sm:pt-10
+                  md:pt-[var(--space-3xs)]
+                  ${idx === 2 ? 'pb-4 sm:pb-6 md:pb-0' : 'pb-8 sm:pb-10 md:pb-0'}
+                  md:grid
+                  md:min-h-[40vh]
+                  md:grid-cols-12
+                `}
               >
-                <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-4 sm:gap-y-6 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
-                  <p className="w-full max-w-[40ch] text-[15px] sm:text-[length:var(--text-base)] font-medium leading-[1.45] sm:leading-snug text-[var(--color-secondary-50)]">
+
+                <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-5 sm:gap-y-6 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
+
+                  {/* DESCRIPTION */}
+
+                  <p className="w-full max-w-[40ch] text-[15px] sm:text-[length:var(--text-base)] font-medium leading-[1.5] sm:leading-snug text-[var(--color-secondary-50)]">
                     {service.description}
                   </p>
-                  <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] md:divide-[var(--color-secondary-200)] pt-1 sm:pt-2">
+
+                  {/* FEATURES */}
+
+                  <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] md:divide-[var(--color-secondary-200)] pt-2 sm:pt-2 md:pt-[var(--space-xs)]">
+
                     {service.features?.map((feat, fIdx) => (
+
                       <div
                         key={fIdx}
-                        className="flex items-baseline gap-x-4 sm:gap-x-[var(--space-sm)] py-2.5 sm:py-3 md:py-1.5 xl:gap-x-[var(--space-md)]"
+                        className="
+                          flex
+                          items-baseline
+                          gap-x-4
+                          sm:gap-x-[var(--space-sm)]
+                          py-3
+                          sm:py-3.5
+                          md:py-3
+                          xl:py-3.5
+                          xl:gap-x-[var(--space-md)]
+                        "
                       >
+
                         <span className="font-mono text-xs sm:text-[length:var(--text-base)] font-medium leading-none text-[var(--color-secondary-75)] select-none mr-1 sm:mr-4">
                           0{fIdx + 1}
                         </span>
-                        <span className="font-bold text-[var(--color-accent-400)] md:text-[var(--color-accent-500)] text-[17px] sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
+
+                        <span className="min-w-0 font-bold text-[var(--color-accent-400)] md:text-[var(--color-accent-500)] text-[17px] sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
                           {feat}
                         </span>
+
                       </div>
+
                     ))}
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
+
           ))}
+
         </div>
       </div>
+
     </section>
   );
 }
