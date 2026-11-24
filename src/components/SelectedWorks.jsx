@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,7 +14,8 @@ export function SelectedWorks() {
   const cardRefs = useRef([]);
   const headingRef = useRef(null);
 
-  const headingChars = 'SELECTED WORKS /'.split('');
+  // Keep complete words together on mobile
+  const headingWords = ['SELECTED', 'WORKS', '/'];
 
   const defaultProjects = [
     {
@@ -63,21 +65,27 @@ export function SelectedWorks() {
     }
   ];
 
-  const projects = (portfolioData.projects && portfolioData.projects.length > 0)
-    ? portfolioData.projects
-    : defaultProjects;
+  const projects =
+    portfolioData.projects && portfolioData.projects.length > 0
+      ? portfolioData.projects
+      : defaultProjects;
 
-  // Direct GPU-accelerated tween for silky-smooth odometer roll without React re-render lag
+  // Project counter animation
   const setCardIndex = (newIndex, immediate = false) => {
     if (newIndex < 0) newIndex = 0;
-    if (newIndex > projects.length - 1) newIndex = projects.length - 1;
+    if (newIndex > projects.length - 1) {
+      newIndex = projects.length - 1;
+    }
+
     if (activeIndexRef.current === newIndex && !immediate) return;
 
     activeIndexRef.current = newIndex;
 
     if (digitStripRef.current) {
       if (immediate) {
-        gsap.set(digitStripRef.current, { yPercent: -newIndex * 20 });
+        gsap.set(digitStripRef.current, {
+          yPercent: -newIndex * 20
+        });
       } else {
         gsap.to(digitStripRef.current, {
           yPercent: -newIndex * 20,
@@ -90,18 +98,28 @@ export function SelectedWorks() {
   };
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
     if (prefersReducedMotion) return;
 
     let ctx;
+
     const rafId = requestAnimationFrame(() => {
       ctx = gsap.context(() => {
-        // Masked letter-by-letter reveal for SELECTED WORKS /
-        const letterEls = headingRef.current?.querySelectorAll('.letter');
+
+        // Letter-by-letter heading reveal
+        const letterEls =
+          headingRef.current?.querySelectorAll('.letter');
+
         if (letterEls?.length) {
           gsap.fromTo(
             letterEls,
-            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 110,
+              opacity: 0
+            },
             {
               yPercent: 0,
               opacity: 1,
@@ -109,107 +127,137 @@ export function SelectedWorks() {
               stagger: 0.03,
               ease: 'power3.out',
               scrollTrigger: {
-                trigger: headingRef.current || sectionRef.current || '#Works',
+                trigger: headingRef.current || sectionRef.current,
                 start: 'top 85%',
                 toggleActions: 'play none none none',
-                once: true,
-              },
+                once: true
+              }
             }
           );
         }
 
-        // Symmetric boundary triggers between consecutive cards:
-        // When card[i] crosses the 50% viewport line downward -> index becomes i
-        // When card[i] crosses the 50% viewport line upward (leaveBack) -> index becomes i - 1
+        // Project counter boundary triggers
         for (let i = 1; i < projects.length; i++) {
           const card = cardRefs.current[i];
+
           if (!card) continue;
+
           ScrollTrigger.create({
             trigger: card,
             start: 'top 50%',
             refreshPriority: 0,
             onEnter: () => setCardIndex(i),
-            onLeaveBack: () => setCardIndex(i - 1),
+            onLeaveBack: () => setCardIndex(i - 1)
           });
         }
 
-        // Initialize correct index on mount or page refresh
+        // Initialize active project based on scroll position
         const updateInitialIndex = () => {
           const vhCenter = window.innerHeight * 0.5;
           let active = 0;
+
           for (let i = 0; i < cardRefs.current.length; i++) {
             const el = cardRefs.current[i];
+
             if (el) {
               const rect = el.getBoundingClientRect();
+
               if (rect.top <= vhCenter) {
                 active = i;
               }
             }
           }
+
           setCardIndex(active, true);
         };
 
         ScrollTrigger.sort();
         ScrollTrigger.refresh();
         updateInitialIndex();
-      });
+
+      }, sectionRef);
     });
 
     const handleResize = () => {
       ScrollTrigger.refresh();
     };
+
     window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', handleResize);
+
       if (ctx) ctx.revert();
     };
   }, [projects.length]);
 
   return (
-    <section id="Works" ref={sectionRef} className="relative z-20">
+    <section
+      id="Works"
+      ref={sectionRef}
+      className="relative z-20"
+    >
       <div className="section-padding bg-[var(--color-secondary-400)]">
+
         {/* Header Section */}
         <div className="flex flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
-          <h2 className="section-heading relative text-[var(--color-accent-400)] text-[length:var(--text-h1-alt)] md:text-[length:var(--text-h1)]">
+
+          {/* Selected Works Heading */}
+          <h2 className="section-heading relative leading-[1.02] text-[var(--color-accent-400)] text-[length:var(--text-h1-alt)] md:text-[length:var(--text-h1)]">
+
             <div className="overflow-hidden">
-              <span ref={headingRef} className="inline-block">
-                {headingChars.map((char, i) =>
-                  char === ' ' ? (
-                    <span key={i} className="inline-block">
-                      &nbsp;
-                    </span>
-                  ) : (
-                    <span key={i} className="inline-block letter">
-                      {char}
-                    </span>
-                  )
-                )}
+              <span
+                ref={headingRef}
+                className="block leading-[1.02]"
+              >
+                {headingWords.map((word, wordIdx) => (
+                  <span
+                    key={wordIdx}
+                    className="inline-block whitespace-nowrap mr-[0.25em]"
+                  >
+                    {word.split('').map((char, i) => (
+                      <span
+                        key={i}
+                        className="inline-block letter"
+                      >
+                        {char}
+                      </span>
+                    ))}
+                  </span>
+                ))}
               </span>
             </div>
+
           </h2>
+
+          {/* Projects Description */}
           <div className="grid-gap flex grid-cols-12 sm:justify-end lg:grid">
+
             <div className="col-span-7 col-start-1 flex flex-col gap-x-[var(--space-xl)] gap-y-[var(--space-2xs)] sm:col-start-6 sm:flex-row">
+
               <span className="flex h-full font-medium uppercase text-nowrap text-[var(--color-secondary-75)] text-[16px] select-none">
                 (PROJECTS)
               </span>
+
               <div className="w-full max-w-[28ch] text-balance font-medium leading-relaxed text-[var(--color-secondary-50)] text-[length:var(--text-base-large)]">
                 Thoughtfully crafted digital experiences that blend utility and aesthetics into something functional, memorable, and refined.
-
               </div>
+
             </div>
           </div>
         </div>
 
-        {/* 12-Column Grid with Giant Sticky Number and Project Cards */}
+        {/* Project Grid */}
         <div className="grid-gap grid grid-cols-12 pt-[var(--space-lg)]">
-          
-          {/* Left Column: Sticky 22vw Number (01, 02, 03, 04, 05) */}
+
+          {/* Sticky Project Number - Desktop */}
           <div className="sticky top-20 col-span-5 hidden h-fit w-full overflow-hidden text-[22vw] font-normal leading-[0.8] text-[var(--color-secondary-50)] md:flex select-none">
+
             <span className="relative">0</span>
+
             <div className="relative h-[22vw] overflow-hidden">
-              <div 
+              <div
                 ref={digitStripRef}
                 className="flex flex-col will-change-transform"
                 style={{ transform: 'translateY(0%)' }}
@@ -221,18 +269,23 @@ export function SelectedWorks() {
                 <span className="inline-block h-[22vw]">5</span>
               </div>
             </div>
+
           </div>
 
-          {/* Right Column: Stacked Project Cards */}
+          {/* Project Cards */}
           <aside className="relative col-span-12 flex flex-col gap-y-[var(--space-xl)] md:col-span-7 md:gap-y-[var(--space-2xl)]">
+
             {projects.map((project, idx) => (
               <ProjectCard
                 key={project.id || idx}
                 project={project}
                 index={idx}
-                onRegisterRef={(el) => (cardRefs.current[idx] = el)}
+                onRegisterRef={(el) => {
+                  cardRefs.current[idx] = el;
+                }}
               />
             ))}
+
           </aside>
 
         </div>

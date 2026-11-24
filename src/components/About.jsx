@@ -5,7 +5,7 @@ import { Skills } from './Skills';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TITLE_LINES = ['DEVELOPER', 'DESIGNER', 'CREATOR/'];
+const TITLE_LINES = ['DESIGN', 'DEVELOP', 'DELIVER/'];
 
 export function About() {
   const sectionRef = useRef(null);
