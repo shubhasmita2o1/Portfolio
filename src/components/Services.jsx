@@ -13,9 +13,9 @@ export function Services() {
   const header2Ref = useRef(null);
 
   const [stickyOffsets, setStickyOffsets] = useState({
-    card1Top: '18vh',
-    card2Top: 'calc(18vh + 7em)',
-    card3Top: 'calc(18vh + 14em)',
+    card1Top: '3.5rem',
+    card2Top: 'calc(3.5rem + 6rem)',
+    card3Top: 'calc(3.5rem + 12rem)',
   });
 
   // Real data from portfolioData
@@ -66,24 +66,28 @@ export function Services() {
   useEffect(() => {
     const updateStickyOffsets = () => {
       const isMobile = window.innerWidth < 768;
-      const baseTopPx = isMobile ? 72 : Math.round(window.innerHeight * 0.18);
 
-      const h1Px = header1Ref.current
-        ? header1Ref.current.offsetHeight
-        : isMobile
-        ? 100
-        : 96;
-      const h2Px = header2Ref.current
-        ? header2Ref.current.offsetHeight
-        : isMobile
-        ? 64
-        : 96;
+      if (isMobile) {
+        const baseTop = 56; // 3.5rem (sits cleanly below mobile nav)
+        const h1 = Math.max(header1Ref.current?.offsetHeight || 0, 92);
+        const h2 = Math.max(header2Ref.current?.offsetHeight || 0, 92);
 
-      setStickyOffsets({
-        card1Top: `${baseTopPx}px`,
-        card2Top: `${baseTopPx + h1Px}px`,
-        card3Top: `${baseTopPx + h1Px + h2Px}px`,
-      });
+        setStickyOffsets({
+          card1Top: `${baseTop}px`,
+          card2Top: `${baseTop + h1}px`,
+          card3Top: `${baseTop + h1 + h2}px`,
+        });
+      } else {
+        const baseTopPx = Math.round(window.innerHeight * 0.18);
+        const h1 = Math.max(header1Ref.current?.offsetHeight || 0, 96);
+        const h2 = Math.max(header2Ref.current?.offsetHeight || 0, 96);
+
+        setStickyOffsets({
+          card1Top: `${baseTopPx}px`,
+          card2Top: `${baseTopPx + h1}px`,
+          card3Top: `${baseTopPx + h1 + h2}px`,
+        });
+      }
     };
 
     updateStickyOffsets();
@@ -95,6 +99,10 @@ export function Services() {
     if (header1Ref.current) ro.observe(header1Ref.current);
     if (header2Ref.current) ro.observe(header2Ref.current);
     window.addEventListener('resize', updateStickyOffsets);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(updateStickyOffsets);
+    }
 
     return () => {
       ro.disconnect();
@@ -220,7 +228,7 @@ export function Services() {
             {/* Header row: fixed number column + generous gap + flexible title column */}
             <div
               ref={header1Ref}
-              className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-4 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-4 sm:py-5 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
+              className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-4 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
             >
               <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
                 ({services[0]?.index || '01'})
