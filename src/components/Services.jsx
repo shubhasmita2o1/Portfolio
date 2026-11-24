@@ -5,17 +5,22 @@ import { portfolioData } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const CARD_MARGIN_CLASSES = [
+  'mb-[6em] sm:mb-[8em] md:mb-[10em]',
+  'mb-[6em] sm:mb-[8em] md:mb-[8em]',
+  'mb-[8em] sm:mb-[8em] md:mb-[7.5em] lg:mb-[8em]',
+];
+
 export function Services() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const introRef = useRef(null);
-  const header1Ref = useRef(null);
-  const header2Ref = useRef(null);
+  const headerRefs = useRef([]);
+  const bodyRefs = useRef([]);
 
-  const [stickyOffsets, setStickyOffsets] = useState({
-    card1Top: '3.5rem',
-    card2Top: 'calc(3.5rem + 6rem)',
-    card3Top: 'calc(3.5rem + 12rem)',
+  const [stickyLayout, setStickyLayout] = useState({
+    tops: ['3.25rem', 'calc(3.25rem + 5.75rem)', 'calc(3.25rem + 11.5rem)'],
+    minHeights: ['auto', 'auto', 'auto'],
   });
 
   // Real data from portfolioData
@@ -62,53 +67,59 @@ export function Services() {
   // Word-by-word structure matching SelectedWorks for clean masking transition
   const headingWords = ['WHAT', 'I', 'DO', '/'];
 
-  // Dynamically calculate and adapt sticky offsets to actual row dimensions
+  // Dynamically measure actual header + body heights so:
+  // 1) Each card's sticky top sits cleanly below the previous card's header (zero overlap)
+  // 2) All 3 cards reach the bottom of their parent at the exact same viewport Y so they lock and exit together
   useEffect(() => {
-    const updateStickyOffsets = () => {
+    const updateStickyLayout = () => {
       const isMobile = window.innerWidth < 768;
+      const baseTop = isMobile ? 52 : Math.round(window.innerHeight * 0.18);
 
-      if (isMobile) {
-        const baseTop = 56; // 3.5rem (sits cleanly below mobile nav)
-        const h1 = Math.max(header1Ref.current?.offsetHeight || 0, 92);
-        const h2 = Math.max(header2Ref.current?.offsetHeight || 0, 92);
+      const h1 = (headerRefs.current[0]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
+      const h2 = (headerRefs.current[1]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
+      const h3 = (headerRefs.current[2]?.offsetHeight || (isMobile ? 86 : 96)) + 1;
 
-        setStickyOffsets({
-          card1Top: `${baseTop}px`,
-          card2Top: `${baseTop + h1}px`,
-          card3Top: `${baseTop + h1 + h2}px`,
-        });
-      } else {
-        const baseTopPx = Math.round(window.innerHeight * 0.18);
-        const h1 = Math.max(header1Ref.current?.offsetHeight || 0, 96);
-        const h2 = Math.max(header2Ref.current?.offsetHeight || 0, 96);
+      const b1 = bodyRefs.current[0]?.offsetHeight || 280;
+      const b2 = bodyRefs.current[1]?.offsetHeight || 280;
+      const b3 = bodyRefs.current[2]?.offsetHeight || 280;
 
-        setStickyOffsets({
-          card1Top: `${baseTopPx}px`,
-          card2Top: `${baseTopPx + h1}px`,
-          card3Top: `${baseTopPx + h1 + h2}px`,
-        });
-      }
+      const ch1 = h1 + b1;
+      const ch2 = h2 + b2;
+      const ch3 = h3 + b3;
+
+      // Synchronize bottom edge across all 3 cards so Card 3 never climbs over Card 2/1 on scroll exit
+      const targetSpanFromT1 = Math.max(ch1, h1 + ch2, h1 + h2 + ch3);
+
+      setStickyLayout({
+        tops: [
+          `${baseTop}px`,
+          `${baseTop + h1}px`,
+          `${baseTop + h1 + h2}px`,
+        ],
+        minHeights: [
+          `${targetSpanFromT1}px`,
+          `${Math.max(ch2, targetSpanFromT1 - h1)}px`,
+          `${Math.max(ch3, targetSpanFromT1 - h1 - h2)}px`,
+        ],
+      });
     };
 
-    updateStickyOffsets();
+    updateStickyLayout();
 
-    const ro = new ResizeObserver(() => {
-      updateStickyOffsets();
-    });
-
-    if (header1Ref.current) ro.observe(header1Ref.current);
-    if (header2Ref.current) ro.observe(header2Ref.current);
-    window.addEventListener('resize', updateStickyOffsets);
+    const ro = new ResizeObserver(updateStickyLayout);
+    headerRefs.current.forEach((el) => el && ro.observe(el));
+    bodyRefs.current.forEach((el) => el && ro.observe(el));
+    window.addEventListener('resize', updateStickyLayout);
 
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(updateStickyOffsets);
+      document.fonts.ready.then(updateStickyLayout);
     }
 
     return () => {
       ro.disconnect();
-      window.removeEventListener('resize', updateStickyOffsets);
+      window.removeEventListener('resize', updateStickyLayout);
     };
-  }, []);
+  }, [services.length]);
 
   // Masked letter reveal transition matching SelectedWorks & About
   useEffect(() => {
@@ -173,7 +184,7 @@ export function Services() {
     <section
       id="Services"
       ref={sectionRef}
-      className="section-padding rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
+      className="section-padding pb-8 md:pb-[var(--space-2xl)] rounded-t-3xl bg-[var(--color-secondary-400)] text-[var(--color-text-bg)] relative z-20"
     >
       {/* Title + intro: stacked rows with letter masking reveal */}
       <div className="relative flex w-full flex-col gap-y-[var(--space-lg)] md:gap-y-[var(--space-2xl)]">
@@ -217,140 +228,71 @@ export function Services() {
         </div>
       </div>
 
-      {/* Sticky cards container with dynamically adapting offsets */}
+      {/* Sticky cards container with dynamically synchronized stacking & exit */}
       <div className="w-full pt-[var(--space-lg)]">
         <div className="mt-8 sm:mt-12 flex flex-col bg-[var(--color-secondary-400)]">
-          {/* ==================== Service 01 ==================== */}
-          <div
-            className="sticky z-[1] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[22em] sm:mb-[20em] md:mb-[19em] lg:mb-[20em]"
-            style={{ top: stickyOffsets.card1Top }}
-          >
-            {/* Header row: fixed number column + generous gap + flexible title column */}
+          {services.slice(0, 3).map((service, idx) => (
             <div
-              ref={header1Ref}
-              className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-4 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
+              key={service.index || idx}
+              className={`sticky border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] ${CARD_MARGIN_CLASSES[idx]}`}
+              style={{
+                zIndex: idx + 1,
+                top: stickyLayout.tops[idx],
+                minHeight: stickyLayout.minHeights[idx],
+              }}
             >
-              <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
-                ({services[0]?.index || '01'})
-              </span>
-              <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.08] md:leading-snug">
-                {services[0]?.title?.toLowerCase().includes('full-stack') ? (
-                  <>
-                    Full-Stack <br className="block sm:hidden" />Development
-                  </>
-                ) : (
-                  services[0]?.title
-                )}
-              </h3>
-            </div>
+              {/* Header row: fixed number column + generous gap + flexible title column */}
+              <div
+                ref={(el) => {
+                  headerRefs.current[idx] = el;
+                }}
+                className="grid grid-cols-[4.25rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-3.5 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-3 sm:py-4 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
+              >
+                <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
+                  ({service.index || `0${idx + 1}`})
+                </span>
+                <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.06] md:leading-snug">
+                  {idx === 0 && service.title?.toLowerCase().includes('full-stack') ? (
+                    <>
+                      Full-Stack <br className="block sm:hidden" />
+                      Development
+                    </>
+                  ) : (
+                    service.title
+                  )}
+                </h3>
+              </div>
 
-            {/* Service 01 Body: description + feature list */}
-            <div className="relative flex flex-col place-items-start pt-6 sm:pt-8 md:pt-[var(--space-3xs)] pb-10 sm:pb-12 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-6 sm:gap-y-8 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
-                <p className="w-full max-w-[42ch] text-[length:var(--text-base)] md:text-[17px] font-medium leading-relaxed sm:leading-relaxed text-[var(--color-secondary-50)]">
-                  {services[0]?.description}
-                </p>
-                <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] pt-2 sm:pt-4">
-                  {services[0]?.features?.map((feat, i) => (
-                    <div
-                      key={i}
-                      className="flex items-baseline gap-x-4 sm:gap-x-6 py-3.5 sm:py-4 md:py-2.5"
-                    >
-                      <span className="font-mono text-sm sm:text-base font-medium leading-none text-[var(--color-secondary-75)] select-none mr-2 sm:mr-3">
-                        0{i + 1}
-                      </span>
-                      <span className="font-bold text-[var(--color-accent-400)] sm:text-[var(--color-accent-500)] text-lg sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
-                        {feat}
-                      </span>
-                    </div>
-                  ))}
+              {/* Service Body: description + feature list */}
+              <div
+                ref={(el) => {
+                  bodyRefs.current[idx] = el;
+                }}
+                className="relative flex flex-col place-items-start pt-4 sm:pt-6 md:pt-[var(--space-3xs)] pb-4 sm:pb-6 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12"
+              >
+                <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-4 sm:gap-y-6 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
+                  <p className="w-full max-w-[42ch] text-[15px] sm:text-[length:var(--text-base)] md:text-[17px] font-medium leading-[1.45] sm:leading-relaxed text-[var(--color-secondary-50)]">
+                    {service.description}
+                  </p>
+                  <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] pt-1 sm:pt-3">
+                    {service.features?.map((feat, fIdx) => (
+                      <div
+                        key={fIdx}
+                        className="flex items-baseline gap-x-4 sm:gap-x-6 py-2.5 sm:py-3.5 md:py-2.5"
+                      >
+                        <span className="font-mono text-xs sm:text-base font-medium leading-none text-[var(--color-secondary-75)] select-none mr-1 sm:mr-3">
+                          0{fIdx + 1}
+                        </span>
+                        <span className="font-bold text-[var(--color-accent-400)] sm:text-[var(--color-accent-500)] text-[17px] sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
+                          {feat}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* ==================== Service 02 ==================== */}
-          <div
-            className="sticky z-[2] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[18em] sm:mb-[16em] md:mb-[13.5em] lg:mb-[14em]"
-            style={{ top: stickyOffsets.card2Top }}
-          >
-            {/* Header row */}
-            <div
-              ref={header2Ref}
-              className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-4 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-4 sm:py-5 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]"
-            >
-              <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
-                ({services[1]?.index || '02'})
-              </span>
-              <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.08] md:leading-snug">
-                {services[1]?.title}
-              </h3>
-            </div>
-
-            {/* Service 02 Body */}
-            <div className="relative flex flex-col place-items-start pt-6 sm:pt-8 md:pt-[var(--space-3xs)] pb-10 sm:pb-12 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-6 sm:gap-y-8 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
-                <p className="w-full max-w-[42ch] text-[length:var(--text-base)] md:text-[17px] font-medium leading-relaxed sm:leading-relaxed text-[var(--color-secondary-50)]">
-                  {services[1]?.description}
-                </p>
-                <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] pt-2 sm:pt-4">
-                  {services[1]?.features?.map((feat, i) => (
-                    <div
-                      key={i}
-                      className="flex items-baseline gap-x-4 sm:gap-x-6 py-3.5 sm:py-4 md:py-2.5"
-                    >
-                      <span className="font-mono text-sm sm:text-base font-medium leading-none text-[var(--color-secondary-75)] select-none mr-2 sm:mr-3">
-                        0{i + 1}
-                      </span>
-                      <span className="font-bold text-[var(--color-accent-400)] sm:text-[var(--color-accent-500)] text-lg sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
-                        {feat}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ==================== Service 03 ==================== */}
-          <div
-            className="sticky z-[3] border-t border-[var(--color-secondary-300)] bg-[var(--color-secondary-400)] mb-[14em] sm:mb-[12em] md:mb-[7.5em] lg:mb-[8em]"
-            style={{ top: stickyOffsets.card3Top }}
-          >
-            {/* Header row */}
-            <div className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5.5rem_1fr] gap-x-4 sm:gap-x-6 md:grid-cols-12 md:gap-x-[var(--gap-fluid)] items-baseline md:items-center text-left text-[length:var(--text-heading-2)] font-semibold text-[var(--color-accent-400)] md:justify-between py-4 sm:py-5 md:py-[var(--space-md)] 2xl:py-[var(--space-sm)]">
-              <span className="col-span-1 md:col-span-2 select-none tracking-tight tabular-nums">
-                ({services[2]?.index || '03'})
-              </span>
-              <h3 className="col-span-1 md:col-span-8 md:col-start-6 tracking-tight leading-[1.08] md:leading-snug">
-                {services[2]?.title}
-              </h3>
-            </div>
-
-            {/* Service 03 Body */}
-            <div className="relative flex flex-col place-items-start pt-6 sm:pt-8 md:pt-[var(--space-3xs)] pb-10 sm:pb-12 md:pb-6 md:grid md:min-h-[38vh] md:grid-cols-12">
-              <div className="col-span-7 col-start-6 flex w-full flex-col gap-y-6 sm:gap-y-8 md:gap-y-[var(--space-sm)] md:pt-[var(--space-sm)]">
-                <p className="w-full max-w-[42ch] text-[length:var(--text-base)] md:text-[17px] font-medium leading-relaxed sm:leading-relaxed text-[var(--color-secondary-50)]">
-                  {services[2]?.description}
-                </p>
-                <div className="flex w-full flex-col divide-y divide-[var(--color-secondary-300)] pt-2 sm:pt-4">
-                  {services[2]?.features?.map((feat, i) => (
-                    <div
-                      key={i}
-                      className="flex items-baseline gap-x-4 sm:gap-x-6 py-3.5 sm:py-4 md:py-2.5"
-                    >
-                      <span className="font-mono text-sm sm:text-base font-medium leading-none text-[var(--color-secondary-75)] select-none mr-2 sm:mr-3">
-                        0{i + 1}
-                      </span>
-                      <span className="font-bold text-[var(--color-accent-400)] sm:text-[var(--color-accent-500)] text-lg sm:text-xl md:text-[length:var(--text-heading-4)] leading-snug">
-                        {feat}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
