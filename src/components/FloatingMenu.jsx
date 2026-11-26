@@ -8,17 +8,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOnHero, setIsOnHero] = useState(true); // true = light background
+  const [isOnHero, setIsOnHero] = useState(true);
   const buttonRef = useRef(null);
   const drawerRef = useRef(null);
   const contentRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Always show the button (including on Hero)
       gsap.set(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto' });
 
-      // Detect when we enter / leave the Services section
       ScrollTrigger.create({
         trigger: '#Services',
         start: 'top 80px',
@@ -63,10 +61,10 @@ export function FloatingMenu() {
 
   return (
     <>
-      {/* Floating Toggle Button – always visible */}
+      {/* Floating Toggle Button – MOBILE ONLY */}
       <div
         ref={buttonRef}
-        className="fixed top-6 right-6 z-[99999999] md:top-8 md:right-8"
+        className="fixed top-6 right-6 z-[99999999] md:hidden"
       >
         <MagneticButton strength={0.45}>
           <button
@@ -74,14 +72,13 @@ export function FloatingMenu() {
             onClick={toggle}
             className={`p-3 rounded-full shadow-lg cursor-pointer transition-all duration-300 transform hover:scale-105 ${
               isOnHero
-                ? 'bg-[var(--color-secondary-300)] text-[#f1f0ed]' // dark button on light hero
-                : 'bg-[#E8E8E3] text-black' // original light button on dark sections
+                ? 'bg-[var(--color-secondary-300)] text-[#f1f0ed]'
+                : 'bg-[#E8E8E3] text-black'
             } ${isOpen ? 'menu-btn-active' : ''}`}
             aria-label="Toggle navigation menu"
           >
             <svg width="28" height="28" viewBox="0 0 35 35">
               <line
-                id="menu-line-1"
                 x1="2"
                 y1="13.5"
                 x2="33"
@@ -91,7 +88,6 @@ export function FloatingMenu() {
                 strokeLinecap="round"
               />
               <line
-                id="menu-line-2"
                 x1="2"
                 y1="21.5"
                 x2="33"
@@ -115,7 +111,7 @@ export function FloatingMenu() {
           ref={contentRef}
           className="w-full relative z-20 flex max-w-2xl flex-col justify-between overflow-hidden rounded-md xl:max-w-3xl 3xl:max-w-4xl p-8 md:p-16 h-full ml-auto"
         >
-          {/* Watermark Graphic */}
+          {/* Watermark */}
           <div className="absolute right-0 top-0 opacity-20 pointer-events-none select-none">
             <svg width="245" height="327" viewBox="0 0 245 327" fill="none" className="w-64 md:w-80">
               <circle cx="163.5" cy="163.5" r="163.5" fill="currentColor" fillOpacity="0.2" />
@@ -133,7 +129,7 @@ export function FloatingMenu() {
             </ul>
           </nav>
 
-          {/* Drawer Footer Info */}
+          {/* Drawer Footer */}
           <div className="flex flex-col gap-4 border-t border-white/20 pt-6">
             <div className="flex flex-col">
               <span className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">
