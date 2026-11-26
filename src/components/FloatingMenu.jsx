@@ -15,13 +15,46 @@ export function FloatingMenu() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto' });
+      const mm = gsap.matchMedia();
 
-      ScrollTrigger.create({
-        trigger: '#Services',
-        start: 'top 80px',
-        onEnter: () => setIsOnHero(false),
-        onLeaveBack: () => setIsOnHero(true),
+      // Mobile: always visible + color change
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto' });
+
+        ScrollTrigger.create({
+          trigger: '#Services',
+          start: 'top 80px',
+          onEnter: () => setIsOnHero(false),
+          onLeaveBack: () => setIsOnHero(true),
+        });
+      });
+
+      // Desktop: hide on Hero, show from Services + color change
+      mm.add("(min-width: 768px)", () => {
+        gsap.set(buttonRef.current, { opacity: 0, scale: 0.8, pointerEvents: 'none' });
+
+        ScrollTrigger.create({
+          trigger: '#Services',
+          start: 'top 80px',
+          onEnter: () => {
+            gsap.to(buttonRef.current, {
+              opacity: 1,
+              scale: 1,
+              pointerEvents: 'auto',
+              duration: 0.3,
+            });
+            setIsOnHero(false);
+          },
+          onLeaveBack: () => {
+            gsap.to(buttonRef.current, {
+              opacity: 0,
+              scale: 0.8,
+              pointerEvents: 'none',
+              duration: 0.3,
+            });
+            setIsOnHero(true);
+          },
+        });
       });
     });
 
@@ -61,10 +94,10 @@ export function FloatingMenu() {
 
   return (
     <>
-      {/* Floating Toggle Button – MOBILE ONLY */}
+      {/* Floating Button */}
       <div
         ref={buttonRef}
-        className="fixed top-6 right-6 z-[99999999] md:hidden"
+        className="fixed top-6 right-6 z-[99999999] md:top-8 md:right-8"
       >
         <MagneticButton strength={0.45}>
           <button
@@ -72,36 +105,20 @@ export function FloatingMenu() {
             onClick={toggle}
             className={`p-3 rounded-full shadow-lg cursor-pointer transition-all duration-300 transform hover:scale-105 ${
               isOnHero
-                ? 'bg-[var(--color-secondary-300)] text-[#f1f0ed]'
-                : 'bg-[#E8E8E3] text-black'
+                ? 'bg-[var(--color-secondary-300)] text-[#f1f0ed]'   // Hero → dark
+                : 'bg-[#E8E8E3] text-black'                         // Services+ → light
             } ${isOpen ? 'menu-btn-active' : ''}`}
             aria-label="Toggle navigation menu"
           >
             <svg width="28" height="28" viewBox="0 0 35 35">
-              <line
-                x1="2"
-                y1="13.5"
-                x2="33"
-                y2="13.5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <line
-                x1="2"
-                y1="21.5"
-                x2="33"
-                y2="21.5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <line x1="2" y1="13.5" x2="33" y2="13.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <line x1="2" y1="21.5" x2="33" y2="21.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
         </MagneticButton>
       </div>
 
-      {/* Fullscreen Drawer Overlay */}
+      {/* Drawer */}
       <div
         ref={drawerRef}
         id="drawer-overlay"
@@ -111,14 +128,12 @@ export function FloatingMenu() {
           ref={contentRef}
           className="w-full relative z-20 flex max-w-2xl flex-col justify-between overflow-hidden rounded-md xl:max-w-3xl 3xl:max-w-4xl p-8 md:p-16 h-full ml-auto"
         >
-          {/* Watermark */}
           <div className="absolute right-0 top-0 opacity-20 pointer-events-none select-none">
             <svg width="245" height="327" viewBox="0 0 245 327" fill="none" className="w-64 md:w-80">
               <circle cx="163.5" cy="163.5" r="163.5" fill="currentColor" fillOpacity="0.2" />
             </svg>
           </div>
 
-          {/* Navigation Links */}
           <nav className="relative h-full flex items-center text-4xl sm:text-6xl md:text-7xl font-bold uppercase leading-tight font-display">
             <ul className="flex flex-col gap-4">
               <li><a href="#Home" onClick={close} className="drawer-link">Home</a></li>
@@ -129,7 +144,6 @@ export function FloatingMenu() {
             </ul>
           </nav>
 
-          {/* Drawer Footer */}
           <div className="flex flex-col gap-4 border-t border-white/20 pt-6">
             <div className="flex flex-col">
               <span className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">
