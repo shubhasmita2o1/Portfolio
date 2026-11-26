@@ -8,21 +8,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOnHero, setIsOnHero] = useState(true); // true = light background
   const buttonRef = useRef(null);
   const drawerRef = useRef(null);
   const contentRef = useRef(null);
 
   useEffect(() => {
-    // Show/hide floating hamburger button based on scroll position (hidden at Hero, appears from Services to end of page)
     const ctx = gsap.context(() => {
-      // Ensure hidden on mount
-      gsap.set(buttonRef.current, { opacity: 0, scale: 0.8, pointerEvents: 'none' });
+      // Always show the button (including on Hero)
+      gsap.set(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto' });
 
+      // Detect when we enter / leave the Services section
       ScrollTrigger.create({
         trigger: '#Services',
-        start: 'top 60px',
-        onEnter: () => gsap.to(buttonRef.current, { opacity: 1, scale: 1, pointerEvents: 'auto', duration: 0.3 }),
-        onLeaveBack: () => gsap.to(buttonRef.current, { opacity: 0, scale: 0.8, pointerEvents: 'none', duration: 0.3 })
+        start: 'top 80px',
+        onEnter: () => setIsOnHero(false),
+        onLeaveBack: () => setIsOnHero(true),
       });
     });
 
@@ -34,8 +35,9 @@ export function FloatingMenu() {
       document.body.style.overflow = 'hidden';
       drawerRef.current.classList.remove('hidden');
       drawerRef.current.classList.add('flex');
-      gsap.fromTo(contentRef.current, 
-        { x: '100%' }, 
+      gsap.fromTo(
+        contentRef.current,
+        { x: '100%' },
         { x: '0%', duration: 0.7, ease: 'power3.out' }
       );
     } else {
@@ -50,7 +52,7 @@ export function FloatingMenu() {
               drawerRef.current.classList.remove('flex');
               drawerRef.current.classList.add('hidden');
             }
-          }
+          },
         });
       }
     }
@@ -61,23 +63,43 @@ export function FloatingMenu() {
 
   return (
     <>
-      {/* Floating Toggle Button (Hidden on Hero, appears from Services onwards) */}
+      {/* Floating Toggle Button – always visible */}
       <div
         ref={buttonRef}
-        className="fixed top-8 right-8 z-[99999999] opacity-0 pointer-events-none"
+        className="fixed top-6 right-6 z-[99999999] md:top-8 md:right-8"
       >
         <MagneticButton strength={0.45}>
           <button
             id="menu-toggle-btn"
             onClick={toggle}
-            className={`p-3 bg-[#E8E8E3] rounded-full shadow-lg cursor-pointer hover:bg-white transition-all transform hover:scale-105 ${
-              isOpen ? 'menu-btn-active' : ''
-            }`}
+            className={`p-3 rounded-full shadow-lg cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+              isOnHero
+                ? 'bg-[var(--color-secondary-300)] text-[#f1f0ed]' // dark button on light hero
+                : 'bg-[#E8E8E3] text-black' // original light button on dark sections
+            } ${isOpen ? 'menu-btn-active' : ''}`}
             aria-label="Toggle navigation menu"
           >
-            <svg width="35" height="35" viewBox="0 0 35 35">
-              <line id="menu-line-1" x1="2" y1="13.5" x2="33" y2="13.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
-              <line id="menu-line-2" x1="2" y1="21.5" x2="33" y2="21.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
+            <svg width="28" height="28" viewBox="0 0 35 35">
+              <line
+                id="menu-line-1"
+                x1="2"
+                y1="13.5"
+                x2="33"
+                y2="13.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <line
+                id="menu-line-2"
+                x1="2"
+                y1="21.5"
+                x2="33"
+                y2="21.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </MagneticButton>

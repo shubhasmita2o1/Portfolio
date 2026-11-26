@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -85,7 +84,6 @@ export function Hero() {
           defaults: { ease: 'power3.out' },
         });
 
-        // Image unfold
         if (imageWrapRef.current) {
           tl.to(
             imageWrapRef.current,
@@ -110,7 +108,6 @@ export function Hero() {
           );
         }
 
-        // Name letters animation
         if (letters.length > 0) {
           tl.to(
             letters,
@@ -139,7 +136,6 @@ export function Hero() {
           );
         }
 
-        // Arrow
         if (arrowRef.current) {
           tl.to(
             arrowRef.current,
@@ -154,7 +150,6 @@ export function Hero() {
           );
         }
 
-        // Tagline
         if (manifestoRef.current) {
           tl.to(
             manifestoRef.current,
@@ -168,7 +163,6 @@ export function Hero() {
           );
         }
 
-        // Contact button
         if (ctaRef.current) {
           tl.to(
             ctaRef.current,
@@ -182,7 +176,6 @@ export function Hero() {
           );
         }
 
-        // Availability
         if (statusRef.current) {
           tl.to(
             statusRef.current,
@@ -196,7 +189,6 @@ export function Hero() {
           );
         }
 
-        // Date
         if (dateRef.current) {
           tl.to(
             dateRef.current,
@@ -211,7 +203,6 @@ export function Hero() {
         }
       };
 
-      // Dynamic letter spacing
       const updateLetterSpacing = () => {
         if (!svgRef.current) return;
 
@@ -254,7 +245,6 @@ export function Hero() {
 
       const fallbackTimer = setTimeout(playEntrance, 1200);
 
-      // Sticky pin and parallax
       const heroSection = sectionRef.current;
       const heroContainer = containerRef.current;
       const servicesSection = document.getElementById('Services');
@@ -304,8 +294,9 @@ export function Hero() {
       >
         <div className="relative flex w-full flex-col md:gap-y-[var(--space-lg)]">
 
-          {/* NAME BANNER */}
-          <h1 className="w-full overflow-clip leading-none">
+          {/* ========== NAME ========== */}
+          <h1 className="w-full overflow-visible leading-none">
+            {/* Desktop SVG */}
             <svg
               ref={svgRef}
               width="100%"
@@ -347,28 +338,28 @@ export function Hero() {
               ))}
             </svg>
 
-            {/* MOBILE NAME */}
+            {/* Mobile Name - Full name, no cutting */}
             <div
               ref={mobileWordsRef}
-              className="flex w-full flex-col md:hidden select-none"
+              className="flex w-full flex-col items-center md:hidden select-none pt-4"
             >
-              <div className="block overflow-clip w-full">
-                <span className="mobile-word block font-editorial font-bold uppercase leading-none tracking-tight text-[var(--color-secondary-400)] text-[length:clamp(2.1rem,8.6vw,3.6rem)] text-center sm:text-left">
+              <div className="w-full text-center overflow-visible px-3">
+                <span className="mobile-word block font-editorial font-bold uppercase leading-[0.9] tracking-tight text-[var(--color-secondary-400)] text-[clamp(2.8rem,12.5vw,4.1rem)]">
                   SHUBHASMITA
                 </span>
               </div>
             </div>
           </h1>
 
-          {/* LOWER CONTENT */}
-          <div className="relative grid w-full grid-cols-12 justify-between gap-x-[var(--gap-fluid)] gap-y-[var(--space-md)]">
+          {/* ========== LOWER CONTENT ========== */}
+          <div className="relative grid w-full grid-cols-12 justify-between gap-x-[var(--gap-fluid)] gap-y-6 md:gap-y-[var(--space-md)] mt-5 md:mt-0">
 
             {/* LEFT COLUMN */}
-            <div className="col-span-12 flex flex-col justify-between gap-y-[var(--space-2xl)] pt-[var(--space-sm)] md:col-span-4 md:gap-y-[var(--space-md)]">
+            <div className="col-span-12 flex flex-col justify-between gap-y-6 pt-2 md:col-span-4 md:gap-y-[var(--space-md)]">
 
-              <div className="grid-gap flex flex-col gap-[var(--space-md)] md:gap-y-[var(--space-xl)]">
+              <div className="flex flex-col gap-5 md:gap-y-[var(--space-xl)]">
 
-                {/* ARROW */}
+                {/* ARROW - desktop only */}
                 <div className="hidden overflow-clip md:block">
                   <span ref={arrowRef} className="block">
                     <svg
@@ -388,37 +379,30 @@ export function Hero() {
                   </span>
                 </div>
 
-                {/* TAGLINE */}
-                <div className="flex flex-col gap-y-[var(--space-sm)] md:gap-y-[var(--space-md)]">
+                {/* TAGLINE + BUTTON */}
+                <div className="flex flex-col gap-y-4 md:gap-y-[var(--space-md)] items-center md:items-start text-center md:text-left">
 
                   <div className="overflow-clip">
                     <div
                       ref={manifestoRef}
-                      className="flex w-full max-w-[38ch] flex-col gap-y-3 text-balance"
+                      className="flex w-full max-w-[34ch] flex-col gap-y-2 text-balance"
                     >
-                      <p className="text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-100)] xl:text-[length:var(--text-base-large)] 3xl:text-[length:var(--text-heading-body)]">
+                      <p className="text-[15px] md:text-[length:var(--text-base)] font-medium leading-snug text-[var(--color-secondary-100)]">
                         Thoughtful design. Powerful engineering. Meaningful experiences.
                       </p>
 
-                      <p className="text-[length:var(--text-base-small)] font-medium leading-relaxed text-[var(--color-secondary-100)] xl:text-[length:var(--text-base)]">
+                      <p className="text-[13px] md:text-[length:var(--text-base-small)] font-medium leading-relaxed text-[var(--color-secondary-100)]">
                         Available for freelance projects worldwide.
                       </p>
                     </div>
                   </div>
 
-                  {/* CONTACT BUTTON - FIXED CLIPPING */}
+                  {/* CONTACT BUTTON */}
                   <div className="overflow-visible">
-                    <div
-                      ref={ctaRef}
-                      className="overflow-visible"
-                    >
+                    <div ref={ctaRef} className="overflow-visible">
                       <MagneticButton strength={0.4}>
-                        <a
-                          href="#Contact"
-                          className="inline-flex"
-                        >
-                          <span className="group pointer-events-auto relative flex h-fit w-fit items-center justify-center overflow-hidden rounded-full bg-[var(--color-secondary-300)] px-[var(--space-md)] sm:py-[var(--space-sm)] py-[var(--space-xs)] font-bold uppercase tracking-wide text-[#f1f0ed] sm:text-[length:var(--text-base)] text-[length:var(--text-base-small)]">
-
+                        <a href="#Contact" className="inline-flex">
+                          <span className="group pointer-events-auto relative flex h-fit w-fit items-center justify-center overflow-hidden rounded-full bg-[var(--color-secondary-300)] px-6 py-3 font-bold uppercase tracking-wide text-[#f1f0ed] text-[14px] md:text-[length:var(--text-base)]">
                             <span className="absolute inset-0 z-10 block overflow-hidden">
                               <span className="block h-full w-full translate-y-full rounded-t-[15rem] bg-[var(--color-accent-600)] transition-all duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] sm:group-hover:translate-y-0 sm:group-hover:rounded-none"></span>
                             </span>
@@ -433,28 +417,25 @@ export function Hero() {
                                 </span>
                               </span>
                             </span>
-
                           </span>
                         </a>
                       </MagneticButton>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
 
             {/* CENTER IMAGE */}
-            <div className="col-span-4 flex flex-col items-start md:items-center">
-              <div className="flex h-fit w-fit flex-col items-center justify-center gap-y-[var(--space-2xs)] overflow-hidden">
-
+            <div className="col-span-12 md:col-span-4 flex flex-col items-center order-last md:order-none mt-2 md:mt-0">
+              <div className="flex h-fit w-fit flex-col items-center justify-center overflow-hidden">
                 <div
                   ref={imageWrapRef}
                   style={{
-                    clipPath: 'inset(50% 0% 50% 0% round 8px)',
+                    clipPath: 'inset(50% 0% 50% 0% round 12px)',
                     willChange: 'clip-path',
                   }}
-                  className="pointer-events-none h-[15vh] max-w-lg rounded-lg md:h-[50vh] overflow-hidden"
+                  className="pointer-events-none h-[26vh] w-[240px] rounded-xl md:h-[50vh] md:w-auto md:max-w-lg md:rounded-lg overflow-hidden"
                 >
                   <img
                     ref={imageRef}
@@ -469,17 +450,15 @@ export function Hero() {
                     src="/1.webp"
                   />
                 </div>
-
               </div>
             </div>
 
-            {/* RIGHT COLUMN */}
-            <div className="end-1 col-span-8 flex w-full flex-col items-end justify-end md:col-span-4">
-
+            {/* RIGHT COLUMN - Availability */}
+            <div className="col-span-12 md:col-span-4 flex w-full flex-row md:flex-col items-center md:items-end justify-between md:justify-end gap-4 mt-1 md:mt-0">
               <div className="overflow-clip">
                 <span
                   ref={statusRef}
-                  className="block max-w-[15ch] text-right font-mono text-[length:var(--text-base-small)] font-medium uppercase leading-snug tracking-wider text-[var(--color-secondary-100)] md:max-w-max 3xl:text-[length:var(--text-base)]"
+                  className="block font-mono text-[12px] md:text-[length:var(--text-base-small)] font-medium uppercase leading-snug tracking-wider text-[var(--color-secondary-100)]"
                 >
                   Available for work
                 </span>
@@ -488,12 +467,11 @@ export function Hero() {
               <div className="overflow-clip">
                 <span
                   ref={dateRef}
-                  className="block text-[length:var(--text-heading-2)] font-semibold uppercase leading-none tracking-tight text-[var(--color-secondary-300)] sm:text-[length:var(--text-heading-1--alt)] 3xl:text-[length:var(--text-heading-1)]"
+                  className="block text-[2.2rem] md:text-[length:var(--text-heading-2)] font-semibold uppercase leading-none tracking-tight text-[var(--color-secondary-300)]"
                 >
                   Nov'26
                 </span>
               </div>
-
             </div>
 
           </div>
